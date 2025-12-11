@@ -1,0 +1,238 @@
+-- ====================================================
+-- SCRIPT COMPLET POUR LA BASE BRASIL BURGER
+-- ====================================================
+
+--2. Créer le type enum pour les états de commande
+CREATE TYPE etat_commande AS ENUM (
+    'EN_ATTENTE',
+    'VALIDEE',
+    'EN_PREPARATION',
+    'PRETE',
+    'EN_LIVRAISON',
+    'LIVREE',
+    'ANNULEE',
+    'TERMINEE'
+);
+
+-- 3. Table des burgers (COMPLÈTE)
+CREATE TABLE burgers (
+    id SERIAL PRIMARY KEY,
+    nom VARCHAR(100) NOT NULL,
+    prix DECIMAL(10,2) NOT NULL CHECK (prix > 0),
+    description TEXT,
+    image VARCHAR(255),
+    archived BOOLEAN DEFAULT FALSE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- 4. Table des compléments (COMPLÈTE)
+CREATE TABLE complements (
+    id SERIAL PRIMARY KEY,
+    nom VARCHAR(100) NOT NULL,
+    prix DECIMAL(10,2) NOT NULL CHECK (prix > 0),
+    type VARCHAR(20) NOT NULL CHECK (type IN ('FRITE', 'BOISSON')),
+    image VARCHAR(255),
+    archived BOOLEAN DEFAULT FALSE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- 5. Table des clients (COMPLÈTE)
+CREATE TABLE clients (
+    id SERIAL PRIMARY KEY,
+    nom VARCHAR(100) NOT NULL,
+    prenom VARCHAR(100) NOT NULL,
+    telephone VARCHAR(20) UNIQUE NOT NULL,
+    email VARCHAR(100) UNIQUE NOT NULL,
+    mot_de_passe VARCHAR(100) NOT NULL,
+    adresse TEXT,
+    archived BOOLEAN DEFAULT FALSE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- 6. Table des zones (COMPLÈTE)
+CREATE TABLE zones (
+    id SERIAL PRIMARY KEY,
+    nom VARCHAR(100) UNIQUE NOT NULL,
+    prix_livraison DECIMAL(10,2) NOT NULL CHECK (prix_livraison >= 0),
+    quartiers TEXT[],
+    archived BOOLEAN DEFAULT FALSE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- 7. Table des menus (COMPLÈTE)
+CREATE TABLE menus (
+    id SERIAL PRIMARY KEY,
+    nom VARCHAR(100) NOT NULL,
+    burger_id INTEGER NOT NULL REFERENCES burgers(id),
+    frite_id INTEGER REFERENCES complements(id),
+    boisson_id INTEGER REFERENCES complements(id),
+    image VARCHAR(255),
+    prix DECIMAL(10,2) NOT NULL CHECK (prix > 0),
+    archived BOOLEAN DEFAULT FALSE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    CHECK (frite_id IS NULL OR (SELECT type FROM complements WHERE id = frite_id) = 'FRITE'),
+    CHECK (boisson_id IS NULL OR (SELECT type FROM complements WHERE id = boisson_id) = 'BOISSON')
+);
+
+-- 8. Table des livreurs (COMPLÈTE)
+CREATE TABLE livreurs (
+    id SERIAL PRIMARY KEY,
+    nom VARCHAR(100) NOT NULL,
+    prenom VARCHAR(100) NOT NULL,
+    telephone VARCHAR(20) UNIQUE NOT NULL,
+    vehicule VARCHAR(50),
+    disponible BOOLEAN DEFAULT TRUE,
+    zone_id INTEGER REFERENCES zones(id),
+    archived BOOLEAN DEFAULT FALSE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- 9. Table des commandes (COMPLÈTE)
+CREATE TABLE commandes (
+    id SERIAL PRIMARY KEY,
+    client_id INTEGER NOT NULL REFERENCES clients(id),
+    etat etat_commande DEFAULT 'EN_ATTENTE',
+    type_livraison VARCHAR(20) NOT NULL CHECK (type_livraison IN ('SUR_PLACE', 'A_EMPORTER', 'LIVRAISON')),
+    date_commande TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    date_livraison TIMESTAMP,
+    zone_id INTEGER REFERENCES zones(id),
+    livreur_id INTEGER REFERENCES livreurs(id),
+    adresse_livraison TEXT,
+    total DECIMAL(10,2) NOT NULL CHECK (total >= 0),
+    payee BOOLEAN DEFAULT FALSE,
+    archived BOOLEAN DEFAULT FALSE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- 10. Table des items de commande (COMPLÈTE)
+CREATE TABLE commande_items (
+    id SERIAL PRIMARY KEY,
+    commande_id INTEGER NOT NULL REFERENCES commandes(id) ON DELETE CASCADE,
+    burger_id INTEGER REFERENCES burgers(id),
+    menu_id INTEGER REFERENCES menus(id),
+    complement_id INTEGER REFERENCES complements(id),
+    quantite INTEGER NOT NULL CHECK (quantite > 0),
+    prix_unitaire DECIMAL(10,2) NOT NULL CHECK (prix_unitaire >= 0),
+    CHECK (
+        (burger_id IS NOT NULL AND menu_id IS NULL AND complement_id IS NULL) OR
+        (burger_id IS NULL AND menu_id IS NOT NULL AND complement_id IS NULL) OR
+        (burger_id IS NULL AND menu_id IS NULL AND complement_id IS NOT NULL)
+    )
+);
+
+-- 11. Table des paiements (COMPLÈTE)
+CREATE TABLE paiements (
+    id SERIAL PRIMARY KEY,
+    commande_id INTEGER UNIQUE NOT NULL REFERENCES commandes(id),
+    montant DECIMAL(10,2) NOT NULL CHECK (montant > 0),
+    methode VARCHAR(20) NOT NULL CHECK (methode IN ('WAVE', 'OM', 'CARTE', 'ESPECES')),
+    date_paiement TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    reference VARCHAR(100),
+    archived BOOLEAN DEFAULT FALSE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- ====================================================
+-- INDEX pour les performances
+-- ====================================================
+CREATE INDEX idx_commandes_client ON commandes(client_id);
+CREATE INDEX idx_commandes_date ON commandes(date_commande);
+CREATE INDEX idx_commandes_etat ON commandes(etat);
+CREATE INDEX idx_commande_items_commande ON commande_items(commande_id);
+CREATE INDEX idx_paiements_commande ON paiements(commande_id);
+CREATE INDEX idx_paiements_date ON paiements(date_paiement);
+
+-- ====================================================
+-- TRIGGERS pour updated_at
+-- ====================================================
+CREATE OR REPLACE FUNCTION update_updated_at_column()
+RETURNS TRIGGER AS $$
+BEGIN
+    NEW.updated_at = CURRENT_TIMESTAMP;
+    RETURN NEW;
+END;
+$$ language 'plpgsql';
+
+-- Triggers pour toutes les tables
+CREATE TRIGGER update_burgers_updated_at BEFORE UPDATE ON burgers
+    FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
+
+CREATE TRIGGER update_complements_updated_at BEFORE UPDATE ON complements
+    FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
+
+CREATE TRIGGER update_menus_updated_at BEFORE UPDATE ON menus
+    FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
+
+CREATE TRIGGER update_clients_updated_at BEFORE UPDATE ON clients
+    FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
+
+CREATE TRIGGER update_zones_updated_at BEFORE UPDATE ON zones
+    FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
+
+CREATE TRIGGER update_livreurs_updated_at BEFORE UPDATE ON livreurs
+    FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
+
+CREATE TRIGGER update_commandes_updated_at BEFORE UPDATE ON commandes
+    FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
+
+CREATE TRIGGER update_paiements_updated_at BEFORE UPDATE ON paiements
+    FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
+
+-- ====================================================
+-- INSERTION DES DONNÉES DE TEST
+-- ====================================================
+
+-- Burgers
+INSERT INTO burgers (nom, prix, description) VALUES
+('Classic Burger', 2500, 'Steak haché, salade, tomate, oignon, sauce maison'),
+('Cheese Burger', 3000, 'Steak haché, cheddar, salade, tomate, sauce maison'),
+('Double Cheese', 4000, 'Double steak haché, double cheddar, salade, tomate'),
+('Chicken Burger', 3500, 'Filet de poulet pané, salade, tomate, sauce blanche'),
+('Fish Burger', 3500, 'Filet de poisson pané, salade, tomate, sauce tartare'),
+('Vegetarien', 2800, 'Galette de légumes, salade, tomate, avocat, sauce yogourt');
+
+-- Compléments
+INSERT INTO complements (nom, prix, type) VALUES
+('Frites Normales', 1500, 'FRITE'),
+('Frites Maison', 2000, 'FRITE'),
+('Coca-Cola', 1000, 'BOISSON'),
+('Fanta', 1000, 'BOISSON'),
+('Sprite', 1000, 'BOISSON'),
+('Eau Minérale', 500, 'BOISSON');
+
+-- Clients (pour la connexion)
+INSERT INTO clients (nom, prenom, telephone, email, mot_de_passe, adresse) VALUES
+('Ndiaye', 'Abdoulaye', '771111111', 'abdoulaye@email.com', 'pass123', 'Fann, Dakar'),
+('Diop', 'Aissatou', '772222222', 'aissatou@email.com', 'pass123', 'Almadies, Dakar'),
+('Gaye', 'Mamadou', '773333333', 'mamadou@email.com', 'pass123', 'Grand Dakar'),
+('Admin', 'System', '770000000', 'admin@brasilburger.sn', 'admin123', 'Plateau, Dakar');
+
+-- Zones
+INSERT INTO zones (nom, prix_livraison, quartiers) VALUES
+('Zone 1 - Centre Ville', 1000, '{"Plateau", "Medina", "Fann"}'),
+('Zone 2 - Almadies', 1500, '{"Almadies", "Mermoz", "Ouakam"}'),
+('Zone 3 - Grand Dakar', 1200, '{"Grand Dakar", "Fass", "Gueule Tapée"}'),
+('Zone 4 - Pikine', 2000, '{"Pikine", "Thiaroye", "Diamaguene"}');
+
+-- Livreurs
+INSERT INTO livreurs (nom, prenom, telephone, vehicule, zone_id) VALUES
+('Diallo', 'Moussa', '771234567', 'Moto', 1),
+('Ndiaye', 'Aminata', '781234567', 'Voiture', 2),
+('Sow', 'Ibrahima', '761234567', 'Moto', 3),
+('Fall', 'Fatou', '701234567', 'Vélo', 4);
+
+-- Menus (après burgers et complements)
+INSERT INTO menus (nom, burger_id, frite_id, boisson_id, prix) VALUES
+('Menu Classic', 1, 1, 3, 5000),
+('Menu Cheese', 2, 1, 3, 5500),
+('Menu Double Cheese', 3, 1, 3, 6500),
+('Menu Chicken', 4, 1, 3, 6000);
+
