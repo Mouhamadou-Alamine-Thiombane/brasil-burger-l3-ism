@@ -1,2 +1,26 @@
-Lien Figma des maquettes 
- 
+﻿🌐 MAQUETTES FIGMA - BRASIL BURGER
+
+LIEN PRINCIPAL :
+https://www.figma.com/design/nBGz5mlD0xH5ipAPws229O/Untitled?node-id=0-1&p=f&t=QQhGs5jZQfnY0B4v-0
+
+📱 POUR Y ACCÉDER :
+1. Cliquez sur le lien ci-dessus
+2. Si demandé, utilisez un compte Figma (gratuit)
+3. Naviguez entre les pages avec les onglets à gauche
+
+🎨 CONTENU DES MAQUETTES :
+• Accueil : Interface principale
+• Catalogue : Burgers, menus, compléments
+• Commande : Processus d'achat
+• Client : Historique & profil
+• Gestionnaire : Dashboard admin
+• Statistiques : Graphiques & analyses
+
+👨‍💻 INFORMATIONS TECHNIQUES :
+- Conçu avec : Figma
+- Date : Décembre 2025
+- Responsive : Oui (mobile, tablette, desktop)
+- État : Finalisé
+
+📧 CONTACT :
+votre.email@exemple.com
