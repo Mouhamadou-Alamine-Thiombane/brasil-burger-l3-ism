@@ -1,0 +1,254 @@
+﻿@model BrasilBurger.ViewModels.HomeViewModel
+@{
+    ViewData["Title"] = "Accueil - Brasil Burger";
+}
+
+<section class="hero">
+    <div class="hero-content">
+        <h1 class="hero-title">Découvrez le vrai goût du Brésil</h1>
+        <p class="hero-subtitle">Des burgers préparés avec passion et des ingrédients frais</p>
+        <a href="/Home/Catalogue?type=burgers" class="btn-hero">Voir notre carte</a>
+    </div>
+</section>
+
+<section class="featured">
+    <h2 class="section-title">Nos Burgers Populaires</h2>
+    <div class="burgers-grid">
+        @foreach (var burger in Model.BurgersPopulaires)
+        {
+            <div class="burger-card">
+                <div class="burger-image">
+                    <img src="@(burger.Image ?? "/images/default-burger.jpg")" alt="@burger.Nom">
+                </div>
+                <div class="burger-info">
+                    <h3 class="burger-name">@burger.Nom</h3>
+                    <p class="burger-description">@burger.Description</p>
+                    <div class="burger-footer">
+                        <span class="burger-price">@burger.Prix.ToString("N0") FCFA</span>
+                        <a href="/Burger/CommanderBurger/@burger.Id" class="btn-order">Commander</a>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</section>
+
+<section class="featured">
+    <h2 class="section-title">Nos Menus Populaires</h2>
+    <div class="menus-grid">
+        @foreach (var menu in Model.MenusPopulaires)
+        {
+            <div class="menu-card">
+                <div class="menu-image">
+                    <img src="@(menu.Image ?? "/images/default-menu.jpg")" alt="@menu.Nom">
+                </div>
+                <div class="menu-info">
+                    <h3 class="menu-name">@menu.Nom</h3>
+                    <div class="menu-composition">
+                        <p><strong>Burger:</strong> @menu.Burger.Nom</p>
+                        @if (menu.Frite != null)
+                        {
+                            <p><strong>Frites:</strong> @menu.Frite.Nom</p>
+                        }
+                        @if (menu.Boisson != null)
+                        {
+                            <p><strong>Boisson:</strong> @menu.Boisson.Nom</p>
+                        }
+                    </div>
+                    <div class="menu-footer">
+                        <span class="menu-price">@menu.Prix.ToString("N0") FCFA</span>
+                        <a href="/Burger/CommanderMenu/@menu.Id" class="btn-order">Commander</a>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</section>
+
+<section class="features">
+    <div class="features-grid">
+        <div class="feature">
+            <i class="fas fa-shipping-fast"></i>
+            <h3>Livraison Rapide</h3>
+            <p>Livraison à domicile en moins de 45 minutes</p>
+        </div>
+        <div class="feature">
+            <i class="fas fa-leaf"></i>
+            <h3>Ingrédients Frais</h3>
+            <p>Produits frais et de qualité supérieure</p>
+        </div>
+        <div class="feature">
+            <i class="fas fa-money-bill-wave"></i>
+            <h3>Paiement Sécurisé</h3>
+            <p>Wave, OM et carte bancaire acceptés</p>
+        </div>
+        <div class="feature">
+            <i class="fas fa-award"></i>
+            <h3>Qualité Garantie</h3>
+            <p>La satisfaction client est notre priorité</p>
+        </div>
+    </div>
+</section>
+
+@section Styles {
+    <style>
+        .hero {
+            background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('/images/hero-bg.jpg');
+            background-size: cover;
+            background-position: center;
+            color: white;
+            padding: 100px 20px;
+            text-align: center;
+        }
+
+        .hero-title {
+            font-size: 3rem;
+            margin-bottom: 20px;
+        }
+
+        .hero-subtitle {
+            font-size: 1.2rem;
+            margin-bottom: 30px;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .btn-hero {
+            background-color: #FF6B00;
+            color: white;
+            padding: 12px 30px;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: bold;
+            display: inline-block;
+            transition: background-color 0.3s;
+        }
+
+        .btn-hero:hover {
+            background-color: #E55A00;
+        }
+
+        .section-title {
+            text-align: center;
+            margin: 60px 0 40px;
+            font-size: 2rem;
+            color: #333;
+        }
+
+        .burgers-grid, .menus-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+            padding: 0 20px;
+        }
+
+        .burger-card, .menu-card {
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s;
+        }
+
+        .burger-card:hover, .menu-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .burger-image, .menu-image {
+            height: 200px;
+            overflow: hidden;
+        }
+
+        .burger-image img, .menu-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .burger-info, .menu-info {
+            padding: 20px;
+        }
+
+        .burger-name, .menu-name {
+            margin: 0 0 10px;
+            font-size: 1.3rem;
+            color: #333;
+        }
+
+        .burger-description, .menu-composition {
+            color: #666;
+            margin-bottom: 20px;
+            font-size: 0.9rem;
+        }
+
+        .burger-footer, .menu-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .burger-price, .menu-price {
+            font-weight: bold;
+            color: #FF6B00;
+            font-size: 1.2rem;
+        }
+
+        .btn-order {
+            background-color: #333;
+            color: white;
+            padding: 8px 20px;
+            border-radius: 20px;
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: background-color 0.3s;
+        }
+
+        .btn-order:hover {
+            background-color: #FF6B00;
+        }
+
+        .features {
+            padding: 60px 20px;
+            background-color: #f8f8f8;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 40px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .feature {
+            text-align: center;
+            padding: 30px 20px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .feature i {
+            font-size: 2.5rem;
+            color: #FF6B00;
+            margin-bottom: 20px;
+        }
+
+        .feature h3 {
+            margin: 0 0 15px;
+            color: #333;
+        }
+
+        .feature p {
+            color: #666;
+            margin: 0;
+        }
+    </style>
+}
+
+@section Scripts {
+    <script>
+        console.log("Page d'accueil chargée");
+    </script>
+}

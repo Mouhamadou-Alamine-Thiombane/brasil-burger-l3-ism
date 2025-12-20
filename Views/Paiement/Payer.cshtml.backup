@@ -1,0 +1,164 @@
+@model BrasilBurger.ViewModels.PaiementViewModel
+@{
+    ViewData["Title"] = "Paiement";
+}
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card shadow">
+                <div class="card-header text-white" style="background-color: #FF6B35;">
+                    <h4 class="mb-0"><i class="fas fa-credit-card me-2"></i>Paiement</h4>
+                </div>
+                <div class="card-body">
+                    <form asp-action="Payer" method="post">
+                        @Html.AntiForgeryToken()
+                        
+                        <input type="hidden" asp-for="CommandeId" />
+                        <input type="hidden" asp-for="Montant" />
+                        
+                        <div class="mb-4 text-center">
+                            <h3>Montant à payer : <span class="text-warning">@Model.Montant.ToString("C")</span></h3>
+                            <p class="text-muted">Commande N° @Model.CommandeId</p>
+                        </div>
+                        
+                        <div class="mb-4">
+                            <h5 class="mb-3">Méthode de paiement</h5>
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <div class="card method-card @(Model.Methode == "wave" ? "selected" : "")" 
+                                         data-method="wave">
+                                        <div class="card-body text-center">
+                                            <div class="mb-3">
+                                                <i class="fas fa-mobile-alt fa-3x" style="color: #00BFFF;"></i>
+                                            </div>
+                                            <h5>Wave</h5>
+                                            <input type="radio" class="btn-check" name="Methode" 
+                                                   id="wave" value="wave" @(Model.Methode == "wave" ? "checked" : "")>
+                                            <label class="btn btn-outline-primary mt-2" for="wave">
+                                                Choisir Wave
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="col-md-6 mb-3">
+                                    <div class="card method-card @(Model.Methode == "om" ? "selected" : "")" 
+                                         data-method="om">
+                                        <div class="card-body text-center">
+                                            <div class="mb-3">
+                                                <i class="fas fa-mobile-alt fa-3x" style="color: #FF6600;"></i>
+                                            </div>
+                                            <h5>Orange Money</h5>
+                                            <input type="radio" class="btn-check" name="Methode" 
+                                                   id="om" value="om" @(Model.Methode == "om" ? "checked" : "")>
+                                            <label class="btn btn-outline-warning mt-2" for="om">
+                                                Choisir OM
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <span asp-validation-for="Methode" class="text-danger"></span>
+                        </div>
+                        
+                        <!-- Détails Wave -->
+                        <div id="waveDetails" class="paiement-details" style="display: @(Model.Methode == "wave" ? "block" : "none")">
+                            <div class="alert alert-info">
+                                <h6><i class="fas fa-info-circle me-2"></i>Instructions Wave :</h6>
+                                <p class="mb-0">
+                                    1. Confirmez le paiement de <strong>@Model.Montant.ToString("C")</strong><br>
+                                    2. Vous recevrez une notification sur votre téléphone<br>
+                                    3. Confirmez le paiement dans l'application Wave
+                                </p>
+                            </div>
+                            <div class="mb-3">
+                                <label for="NumeroWave" class="form-label">Numéro Wave (optionnel)</label>
+                                <input type="tel" class="form-control" id="NumeroWave" asp-for="NumeroWave">
+                            </div>
+                        </div>
+                        
+                        <!-- Détails Orange Money -->
+                        <div id="omDetails" class="paiement-details" style="display: @(Model.Methode == "om" ? "block" : "none")">
+                            <div class="alert alert-warning">
+                                <h6><i class="fas fa-info-circle me-2"></i>Instructions Orange Money :</h6>
+                                <p class="mb-0">
+                                    1. Confirmez le paiement de <strong>@Model.Montant.ToString("C")</strong><br>
+                                    2. Suivez les instructions USSD reçues<br>
+                                    3. Entrez votre code PIN pour confirmer
+                                </p>
+                            </div>
+                            <div class="mb-3">
+                                <label for="NumeroOM" class="form-label">Numéro Orange Money (optionnel)</label>
+                                <input type="tel" class="form-control" id="NumeroOM" asp-for="NumeroOM">
+                            </div>
+                        </div>
+                        
+                        <div class="alert alert-success">
+                            <div class="d-flex">
+                                <i class="fas fa-shield-alt fa-2x me-3"></i>
+                                <div>
+                                    <h6 class="alert-heading">Paiement 100% Sécurisé</h6>
+                                    <p class="mb-0 small">
+                                        Vos informations de paiement sont cryptées et protégées.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-success btn-lg">
+                                <i class="fas fa-lock me-2"></i>Payer maintenant
+                            </button>
+                            <a asp-controller="Commande" asp-action="Valider" 
+                               class="btn btn-outline-secondary">
+                                <i class="fas fa-arrow-left me-2"></i>Retour
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <style>
+        .method-card {
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+        .method-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        .method-card.selected {
+            border-color: #FF6B35;
+            background-color: rgba(255, 107, 53, 0.05);
+        }
+    </style>
+    <script>
+        $(document).ready(function() {
+            // Gérer le changement de méthode de paiement
+            $('input[name="Methode"]').on('change', function() {
+                const method = $(this).val();
+                
+                // Mettre à jour la sélection visuelle
+                $('.method-card').removeClass('selected');
+                $(`.method-card[data-method="${method}"]`).addClass('selected');
+                
+                // Afficher/masquer les détails
+                $('.paiement-details').hide();
+                $(`#${method}Details`).show();
+            });
+            
+            // Gérer le clic sur les cartes
+            $('.method-card').on('click', function() {
+                const method = $(this).data('method');
+                $(`#${method}`).prop('checked', true).trigger('change');
+            });
+        });
+    </script>
+}

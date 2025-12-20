@@ -1,0 +1,79 @@
+@model BrasilBurger.ViewModels.CommandeValidationModel
+@{
+    ViewData["Title"] = "Valider Commande";
+}
+
+<div class="container">
+    <h1>Valider votre commande</h1>
+    
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5>Détails de la livraison</h5>
+                </div>
+                <div class="card-body">
+                    <form asp-action="Valider" method="post">
+                        <div class="mb-3">
+                            <label asp-for="TypeLivraison" class="form-label">Type de livraison</label>
+                            <select asp-for="TypeLivraison" class="form-control">
+                                <option value="SUR_PLACE">Sur place</option>
+                                <option value="A_EMPORTER">À emporter</option>
+                                <option value="LIVRAISON">Livraison</option>
+                            </select>
+                            <span asp-validation-for="TypeLivraison" class="text-danger"></span>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label asp-for="AdresseLivraison" class="form-label">Adresse de livraison</label>
+                            <input asp-for="AdresseLivraison" class="form-control" />
+                            <span asp-validation-for="AdresseLivraison" class="text-danger"></span>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label asp-for="Telephone" class="form-label">Téléphone</label>
+                            <input asp-for="Telephone" class="form-control" />
+                            <span asp-validation-for="Telephone" class="text-danger"></span>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label asp-for="ModePaiement" class="form-label">Mode de paiement</label>
+                            <select asp-for="ModePaiement" class="form-control">
+                                <option value="ESPECES">Espèces</option>
+                                <option value="CARTE">Carte bancaire</option>
+                                <option value="WAVE">Wave</option>
+                                <option value="OM">Orange Money</option>
+                            </select>
+                            <span asp-validation-for="ModePaiement" class="text-danger"></span>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label asp-for="Instructions" class="form-label">Instructions spéciales</label>
+                            <textarea asp-for="Instructions" class="form-control" rows="3"></textarea>
+                        </div>
+                        
+                        <div class="alert alert-info">
+                            <h5>Total: @Model.Total.ToString("C")</h5>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-primary btn-lg w-100">Confirmer la commande</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5>Récapitulatif</h5>
+                </div>
+                <div class="card-body">
+                    <p>Votre commande sera traitée sous 30 minutes.</p>
+                    <p>Pour les livraisons, le délai estimé est de 45-60 minutes.</p>
+                    <hr>
+                    <p><strong>Total:</strong> @Model.Total.ToString("C")</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

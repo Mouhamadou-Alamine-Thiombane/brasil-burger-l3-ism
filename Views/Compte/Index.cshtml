@@ -1,0 +1,41 @@
+using System.ComponentModel.DataAnnotations;
+
+namespace BrasilBurger.ViewModels
+{
+    public class CompteViewModel
+    {
+        public int Id { get; set; }
+       
+        [Required(ErrorMessage = "Le nom est requis")]
+        public string Nom { get; set; } = string.Empty;
+       
+        [Required(ErrorMessage = "Le prénom est requis")]
+        public string Prenom { get; set; } = string.Empty;
+       
+        [Required(ErrorMessage = "Le téléphone est requis")]
+        [Phone(ErrorMessage = "Format de téléphone invalide")]
+        public string Telephone { get; set; } = string.Empty;
+       
+        [Required(ErrorMessage = "L'email est requis")]
+        [EmailAddress(ErrorMessage = "Format d'email invalide")]
+        public string Email { get; set; } = string.Empty;
+       
+        public string? Adresse { get; set; }
+       
+        public List<CommandeViewModel> Commandes { get; set; } = new List<CommandeViewModel>();
+        
+        // Propriétés calculées
+        public int NombreCommandesTotal => Commandes.Count;
+        public decimal MontantTotalDepense => Commandes.Sum(c => c.Total);
+        
+        // Pour compatibilité avec la vue qui utilise "Client"
+        public string ClientNom => Nom;
+        public string ClientPrenom => Prenom;
+        public string ClientEmail => Email;
+        public string ClientTelephone => Telephone;
+        public string ClientAdresse => Adresse ?? string.Empty;
+        
+        // Alias pour la vue
+        public List<CommandeViewModel> CommandesRecentes => Commandes.Take(5).ToList();
+    }
+}

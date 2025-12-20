@@ -1,0 +1,77 @@
+@model IEnumerable<BrasilBurger.Models.Burger>
+@{
+    ViewData["Title"] = "Nos Burgers";
+}
+
+<div class="container">
+    <h1 class="mb-4" style="color: #FF6B35;">Nos Burgers</h1>
+    
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <form id="filtreForm" class="row g-3">
+                        <div class="col-md-6">
+                            <input type="text" class="form-control" id="recherche" 
+                                   placeholder="Rechercher un burger...">
+                        </div>
+                        <div class="col-md-3">
+                            <input type="number" class="form-control" id="prixMin" 
+                                   placeholder="Prix min" min="0">
+                        </div>
+                        <div class="col-md-3">
+                            <input type="number" class="form-control" id="prixMax" 
+                                   placeholder="Prix max" min="0">
+                        </div>
+                        <div class="col-12">
+                            <button type="submit" class="btn btn-primary">Filtrer</button>
+                            <button type="button" id="resetFiltres" class="btn btn-outline-secondary">
+                                Réinitialiser
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div id="listeBurgers">
+        @await Html.PartialAsync("_ListeBurgers", Model)
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function() {
+            // Filtrer les burgers
+            $('#filtreForm').on('submit', function(e) {
+                e.preventDefault();
+                
+                const recherche = $('#recherche').val();
+                const prixMin = $('#prixMin').val();
+                const prixMax = $('#prixMax').val();
+                
+                $.ajax({
+                    url: '@Url.Action("Filtrer", "Burger")',
+                    type: 'GET',
+                    data: {
+                        recherche: recherche,
+                        prixMin: prixMin,
+                        prixMax: prixMax
+                    },
+                    success: function(data) {
+                        $('#listeBurgers').html(data);
+                    }
+                });
+            });
+            
+            // Réinitialiser les filtres
+            $('#resetFiltres').on('click', function() {
+                $('#recherche').val('');
+                $('#prixMin').val('');
+                $('#prixMax').val('');
+                $('#filtreForm').submit();
+            });
+        });
+    </script>
+}

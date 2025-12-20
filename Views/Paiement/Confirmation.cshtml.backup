@@ -1,0 +1,51 @@
+@model BrasilBurger.Models.Commande
+@{
+    ViewData["Title"] = "Confirmation de paiement";
+}
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card shadow text-center">
+                <div class="card-header bg-success text-white">
+                    <h4 class="mb-0"><i class="fas fa-check-circle me-2"></i>Paiement confirmé !</h4>
+                </div>
+                <div class="card-body py-5">
+                    <div class="mb-4">
+                        <i class="fas fa-check-circle fa-5x text-success"></i>
+                    </div>
+                    
+                    <h2 class="mb-3">Merci pour votre commande !</h2>
+                    <p class="lead mb-4">
+                        Votre paiement a été confirmé avec succès.
+                    </p>
+                    
+                    <div class="alert alert-info text-start mb-4">
+                        <h6><i class="fas fa-receipt me-2"></i>Détails de la commande :</h6>
+                        <ul class="mb-0">
+                            <li><strong>N° Commande :</strong> #@Model.Id.ToString("D6")</li>
+                            <li><strong>Date :</strong> @Model.DateCommande.ToString("dd/MM/yyyy HH:mm")</li>
+                            <li><strong>Montant :</strong> @Model.MontantTotal.ToString("C")</li>
+                            <li><strong>Statut :</strong> <span class="badge bg-success">@Model.Statut</span></li>
+                        </ul>
+                    </div>
+                    
+                    <div class="alert alert-success">
+                        <i class="fas fa-info-circle me-2"></i>
+                        <strong>Suivi :</strong> Vous pouvez suivre l'état de votre commande dans votre compte.
+                    </div>
+                    
+                    <div class="d-grid gap-2 col-md-8 mx-auto">
+                        <a asp-controller="Compte" asp-action="DetailsCommande" asp-route-id="@Model.Id" 
+                           class="btn btn-primary btn-lg">
+                            <i class="fas fa-eye me-2"></i>Voir ma commande
+                        </a>
+                        <a asp-controller="Home" asp-action="Index" class="btn btn-outline-secondary">
+                            <i class="fas fa-home me-2"></i>Retour à l'accueil
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,57 @@
+@model BrasilBurger.Services.Panier
+@{
+    ViewData["Title"] = "Panier";
+}
+
+<div class="container">
+    <h1>Mon Panier</h1>
+    
+    @if (Model.Items.Any())
+    {
+        <div class="row">
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-body">
+                        @foreach (var item in Model.Items)
+                        {
+                            <div class="d-flex justify-content-between align-items-center mb-3 pb-3 border-bottom">
+                                <div>
+                                    <h5>@item.Nom</h5>
+                                    <p class="text-muted mb-0">@item.Type - @item.Prix.ToString("C")</p>
+                                    <p>Quantité: @item.Quantite</p>
+                                </div>
+                                <div class="text-end">
+                                    <h5>@item.SousTotal.ToString("C")</h5>
+                                    <button class="btn btn-sm btn-outline-danger">Supprimer</button>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-header">
+                        <h5>Total</h5>
+                    </div>
+                    <div class="card-body">
+                        <h3 class="text-primary">@Model.Total.ToString("C")</h3>
+                        <a href="@Url.Action("Valider", "Commande")" class="btn btn-primary btn-lg w-100 mt-3">Valider la commande</a>
+                        <a href="@Url.Action("Catalogue", "Home", new { type = "burgers" })" class="btn btn-outline-secondary w-100 mt-2">Continuer mes achats</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-info text-center py-5">
+            <i class="fas fa-shopping-cart fa-3x mb-3"></i>
+            <h4>Votre panier est vide</h4>
+            <p class="mb-3">Ajoutez des produits depuis notre catalogue</p>
+            <a href="@Url.Action("Catalogue", "Home", new { type = "burgers" })" class="btn btn-primary">Voir nos burgers</a>
+            <a href="@Url.Action("Catalogue", "Home", new { type = "menus" })" class="btn btn-outline-primary ms-2">Voir nos menus</a>
+        </div>
+    }
+</div>

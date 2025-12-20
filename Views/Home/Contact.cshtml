@@ -1,0 +1,112 @@
+@{
+    ViewData["Title"] = "Contact";
+}
+
+<div class="container">
+    <h1 class="mb-4" style="color: #FF6B35;">Contactez-nous</h1>
+    
+    <div class="row">
+        <div class="col-lg-6 mb-4">
+            <div class="card h-100">
+                <div class="card-header text-white" style="background-color: #FF6B35;">
+                    <h5 class="mb-0"><i class="fas fa-map-marker-alt me-2"></i>Notre adresse</h5>
+                </div>
+                <div class="card-body">
+                    <p><strong>Brasil Burger</strong></p>
+                    <p>123 Avenue du Commerce</p>
+                    <p>Dakar, Sénégal</p>
+                    <hr>
+                    <p><i class="fas fa-phone me-2"></i> <strong>Téléphone :</strong> +221 77 123 45 67</p>
+                    <p><i class="fas fa-envelope me-2"></i> <strong>Email :</strong> contact@brasilburger.com</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-lg-6 mb-4">
+            <div class="card h-100">
+                <div class="card-header text-white" style="background-color: #FF6B35;">
+                    <h5 class="mb-0"><i class="fas fa-paper-plane me-2"></i>Envoyez-nous un message</h5>
+                </div>
+                <div class="card-body">
+                    <form id="contactForm">
+                        <div class="mb-3">
+                            <label for="name" class="form-label">Nom complet</label>
+                            <input type="text" class="form-control" id="name" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="email" class="form-label">Email</label>
+                            <input type="email" class="form-control" id="email" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="subject" class="form-label">Sujet</label>
+                            <input type="text" class="form-control" id="subject" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="message" class="form-label">Message</label>
+                            <textarea class="form-control" id="message" rows="4" required></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-lg w-100">
+                            <i class="fas fa-paper-plane me-2"></i>Envoyer le message
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="card mb-5">
+        <div class="card-body">
+            <h4 class="mb-4" style="color: #FF6B35;">Foire aux questions</h4>
+            <div class="accordion" id="faqAccordion">
+                <div class="accordion-item">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#faq1">
+                            Quels sont vos horaires de livraison ?
+                        </button>
+                    </h2>
+                    <div id="faq1" class="accordion-collapse collapse show" data-bs-parent="#faqAccordion">
+                        <div class="accordion-body">
+                            Nous livrons du lundi au dimanche de 11h00 à 21h00.
+                        </div>
+                    </div>
+                </div>
+                <div class="accordion-item">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq2">
+                            Quelles sont vos zones de livraison ?
+                        </button>
+                    </h2>
+                    <div id="faq2" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                        <div class="accordion-body">
+                            Nous livrons dans un rayon de 10km autour de notre restaurant principal à Dakar.
+                        </div>
+                    </div>
+                </div>
+                <div class="accordion-item">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq3">
+                            Acceptez-vous les commandes pour événements ?
+                        </button>
+                    </h2>
+                    <div id="faq3" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                        <div class="accordion-body">
+                            Oui, nous proposons des services de traiteur pour événements. Contactez-nous pour plus d'informations.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function() {
+            $('#contactForm').on('submit', function(e) {
+                e.preventDefault();
+                toastr.success('Votre message a été envoyé avec succès !');
+                this.reset();
+            });
+        });
+    </script>
+}
