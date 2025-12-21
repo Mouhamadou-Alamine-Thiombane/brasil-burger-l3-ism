@@ -25,6 +25,8 @@ namespace BrasilBurger.Controllers
             }
 
             ViewBag.IsAuthenticated = _sessionService.IsAuthenticated();
+            ViewBag.ClientNom = _sessionService.GetClientNom();
+            ViewBag.ClientPrenom = _sessionService.GetClientPrenom();
             return View(burger);
         }
 

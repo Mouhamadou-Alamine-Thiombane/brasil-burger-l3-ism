@@ -55,8 +55,8 @@ builder.Services.AddSession(options =>
 // =====================================
 builder.Services.AddHttpContextAccessor();
 
-var port = Environment.GetEnvironmentVariable("PORT") ?? "5000";
-builder.WebHost.UseUrls($"http://0.0.0.0:{port}");
+//   var port = Environment.GetEnvironmentVariable("PORT") ?? "5000";
+//   builder.WebHost.UseUrls($"http://0.0.0.0:{port}");
 
 var app = builder.Build();
 

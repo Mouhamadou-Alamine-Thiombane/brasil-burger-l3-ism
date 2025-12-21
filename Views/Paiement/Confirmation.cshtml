@@ -24,9 +24,9 @@
                         <h6><i class="fas fa-receipt me-2"></i>Détails de la commande :</h6>
                         <ul class="mb-0">
                             <li><strong>N° Commande :</strong> #@Model.Id.ToString("D6")</li>
-                            <li><strong>Date :</strong> @Model.DateCommande.ToString("dd/MM/yyyy HH:mm")</li>
-                            <li><strong>Montant :</strong> @Model.MontantTotal.ToString("C")</li>
-                            <li><strong>Statut :</strong> <span class="badge bg-success">@Model.Statut</span></li>
+                            <li><strong>Date :</strong> @Model.DateCommande.ToLocalTime().ToString("dd/MM/yyyy HH:mm")</li>
+                            <li><strong>Montant :</strong> @Model.Total.ToString("C")</li>
+                            <li><strong>Statut :</strong> <span class="badge bg-success">@Model.Etat</span></li> <!-- CHANGÉ ICI -->
                         </ul>
                     </div>
                     
@@ -36,9 +36,11 @@
                     </div>
                     
                     <div class="d-grid gap-2 col-md-8 mx-auto">
-                        <a asp-controller="Compte" asp-action="DetailsCommande" asp-route-id="@Model.Id" 
-                           class="btn btn-primary btn-lg">
-                            <i class="fas fa-eye me-2"></i>Voir ma commande
+                        <a asp-controller="Compte" asp-action="Index" class="btn btn-primary btn-lg"> <!-- CHANGÉ ICI -->
+                            <i class="fas fa-user me-2"></i>Mon compte
+                        </a>
+                        <a asp-controller="Commande" asp-action="MesCommandes" class="btn btn-outline-primary"> <!-- CHANGÉ ICI -->
+                            <i class="fas fa-clipboard-list me-2"></i>Mes commandes
                         </a>
                         <a asp-controller="Home" asp-action="Index" class="btn btn-outline-secondary">
                             <i class="fas fa-home me-2"></i>Retour à l'accueil

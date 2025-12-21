@@ -1,7 +1,7 @@
 @model BrasilBurger.Models.Burger
 @{
     ViewData["Title"] = Model.Nom;
-    var complements = ViewBag.Complements as List<BrasilBurger.Client.Models.Complement>;
+    var complements = ViewBag.Complements as List<BrasilBurger.Models.Complement>;
 }
 
 <div class="container">
@@ -16,7 +16,7 @@
     <div class="row">
         <div class="col-lg-6 mb-4">
             <div class="card">
-                <img src="@Model.ImageUrl" class="card-img-top" alt="@Model.Nom">
+                <img src="@Model.Image" class="card-img-top" alt="@Model.Nom">
             </div>
         </div>
         
@@ -28,13 +28,13 @@
                     
                     <div class="d-flex justify-content-between align-items-center mb-4">
                         <div class="h2 text-warning">@Model.Prix.ToString("C")</div>
-                        @if (!Model.EstActif)
+                        @if (!Model.Archived)
                         {
                             <span class="badge bg-danger">Indisponible</span>
                         }
                     </div>
                     
-                    @if (Model.EstActif)
+                    @if (Model.Archived)
                     {
                         <!-- Compléments -->
                         @if (complements != null && complements.Any())

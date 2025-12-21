@@ -146,7 +146,6 @@ namespace BrasilBurger.Controllers
         [HttpGet]
 public IActionResult Panier()
 {
-    // Vous devrez implémenter la logique pour récupérer le panier
     var panier = new Panier(); // À remplacer par votre logique
     ViewBag.IsAuthenticated = _sessionService.IsAuthenticated();
     return View(panier);

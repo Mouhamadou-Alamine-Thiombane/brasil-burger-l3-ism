@@ -37,10 +37,10 @@ namespace BrasilBurger.Models
         [Column("updated_at")]
         public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
 
-        // ✅ CORRECTION ICI
+        
         public ICollection<CommandeItem> CommandeItems { get; set; } = new List<CommandeItem>();
 
-        // ✅ CORRECTION ICI
+        
         public ICollection<Menu> Menus { get; set; } = new List<Menu>();
     }
 }

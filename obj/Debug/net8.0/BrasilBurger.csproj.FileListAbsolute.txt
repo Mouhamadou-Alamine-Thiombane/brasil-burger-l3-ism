@@ -394,6 +394,7 @@ C:\Users\lenovo\Csharp\BrasilBurger\obj\Debug\net8.0\BrasilBurger.MvcApplication
 C:\Users\lenovo\Csharp\BrasilBurger\obj\Debug\net8.0\BrasilBurger.MvcApplicationPartsAssemblyInfo.cache
 C:\Users\lenovo\Csharp\BrasilBurger\obj\Debug\net8.0\BrasilBurger.RazorAssemblyInfo.cache
 C:\Users\lenovo\Csharp\BrasilBurger\obj\Debug\net8.0\BrasilBurger.RazorAssemblyInfo.cs
+C:\Users\lenovo\Csharp\BrasilBurger\obj\Debug\net8.0\BrasilBurger.sourcelink.json
 C:\Users\lenovo\Csharp\BrasilBurger\obj\Debug\net8.0\rjimswa.dswa.cache.json
 C:\Users\lenovo\Csharp\BrasilBurger\obj\Debug\net8.0\rjsmrazor.dswa.cache.json
 C:\Users\lenovo\Csharp\BrasilBurger\obj\Debug\net8.0\rjsmcshtml.dswa.cache.json

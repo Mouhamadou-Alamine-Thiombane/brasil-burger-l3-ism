@@ -1,0 +1,148 @@
+@model List<BrasilBurger.ViewModels.CommandeViewModel>
+@{
+    ViewData["Title"] = "Mes Commandes";
+}
+
+<div class="container mt-4">
+    <h1>Mes Commandes</h1>
+    
+    @if (Model.Any())
+    {
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>N° Commande</th>
+                        <th>Date</th>
+                        <th>Type Livraison</th>
+                        <th>Total</th>
+                        <th>Statut</th>
+                        <th>Payée</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var commande in Model)
+                    {
+                        <tr>
+                            <td>#@commande.Id</td>
+                            <td>@commande.DateCommande.ToString("dd/MM/yyyy HH:mm")</td>
+                            <td>
+                                @commande.TypeLivraison switch
+                                {
+                                    "SUR_PLACE" => <span>Sur place</span>,
+                                    "A_EMPORTER" => <span>À emporter</span>,
+                                    "LIVRAISON" => <span>Livraison</span>,
+                                    _ => <span>@commande.TypeLivraison</span>
+                                }
+                            </td>
+                            <td class="text-success fw-bold">@commande.Total.ToString("C")</td>
+                            <td>
+                                @{
+                                    var badgeClass = commande.Etat switch
+                                    {
+                                        EtatCommande.EN_ATTENTE => "bg-warning",
+                                        EtatCommande.VALIDEE => "bg-success",
+                                        EtatCommande.EN_PREPARATION => "bg-info",
+                                        EtatCommande.PRETE => "bg-primary",
+                                        EtatCommande.EN_LIVRAISON => "bg-secondary",
+                                        EtatCommande.LIVREE => "bg-dark",
+                                        EtatCommande.ANNULEE => "bg-danger",
+                                        _ => "bg-secondary"
+                                    };
+                                }
+                                <span class="badge @badgeClass">@commande.Etat</span>
+                            </td>
+                            <td>
+                                @if (commande.Payee)
+                                {
+                                    <span class="badge bg-success">Payée</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-warning">À payer</span>
+                                }
+                            </td>
+                            <td>
+                                <a href="@Url.Action("Detail", "Commande", new { id = commande.Id })" 
+                                   class="btn btn-sm btn-outline-primary">
+                                    <i class="fas fa-eye"></i> Voir
+                                </a>
+                                
+                                @if (commande.Etat == EtatCommande.EN_ATTENTE && !commande.Payee)
+                                {
+                                    <a href="@Url.Action("Paiement", "Paiement", new { commandeId = commande.Id })" 
+                                       class="btn btn-sm btn-success ms-1">
+                                        <i class="fas fa-credit-card"></i> Payer
+                                    </a>
+                                    
+                                    <button type="button" 
+                                            class="btn btn-sm btn-outline-danger ms-1 btn-annuler" 
+                                            data-id="@commande.Id">
+                                        <i class="fas fa-times"></i> Annuler
+                                    </button>
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+        
+        <div class="mt-4">
+            <div class="alert alert-info">
+                <h5>Récapitulatif</h5>
+                <p>Nombre de commandes: <strong>@Model.Count</strong></p>
+                <p>Total dépensé: <strong class="text-success">@Model.Sum(c => c.Total).ToString("C")</strong></p>
+                <p>Commandes en attente: <strong>@Model.Count(c => c.Etat == EtatCommande.EN_ATTENTE)</strong></p>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-info text-center py-5">
+            <i class="fas fa-shopping-cart fa-3x mb-3"></i>
+            <h4>Vous n'avez pas encore passé de commande</h4>
+            <p class="mb-3">Découvrez notre catalogue et passez votre première commande !</p>
+            <a href="@Url.Action("Catalogue", "Home", new { type = "burgers" })" class="btn btn-primary">
+                <i class="fas fa-hamburger"></i> Voir nos burgers
+            </a>
+            <a href="@Url.Action("Catalogue", "Home", new { type = "menus" })" class="btn btn-outline-primary ms-2">
+                <i class="fas fa-utensils"></i> Voir nos menus
+            </a>
+        </div>
+    }
+</div>
+
+@section Scripts {
+    <script>
+        // Gestion de l'annulation des commandes
+        document.querySelectorAll('.btn-annuler').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const commandeId = this.getAttribute('data-id');
+                
+                if (confirm('Êtes-vous sûr de vouloir annuler cette commande ?')) {
+                    fetch(`/Commande/Annuler/${commandeId}`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        }
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            alert(data.message);
+                            location.reload();
+                        } else {
+                            alert('Erreur: ' + data.message);
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Erreur:', error);
+                        alert('Une erreur est survenue');
+                    });
+                }
+            });
+        });
+    </script>
+}

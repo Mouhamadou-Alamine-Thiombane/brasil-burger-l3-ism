@@ -128,7 +128,9 @@ namespace BrasilBurger.Services
             {
                 Id = c.Id,
                 DateCommande = c.DateCommande,
-                Etat = c.Etat.ToString(), // ← .ToString() POUR CONVERTIR ENUM → STRING
+
+                Etat = c.Etat,
+                //Etat = c.Etat.ToString(), // ← .ToString() POUR CONVERTIR ENUM → STRING
                 TypeLivraison = c.TypeLivraison,
                 Total = c.Total,
                 Payee = c.Payee,
@@ -167,7 +169,9 @@ namespace BrasilBurger.Services
             {
                 Id = commande.Id,
                 DateCommande = commande.DateCommande,
-                Etat = commande.Etat.ToString(), // ← .ToString() POUR CONVERTIR ENUM → STRING
+
+                Etat = commande.Etat,
+                //Etat = commande.Etat.ToString(), // ← .ToString() POUR CONVERTIR ENUM → STRING
                 TypeLivraison = commande.TypeLivraison,
                 Total = commande.Total,
                 Payee = commande.Payee,
