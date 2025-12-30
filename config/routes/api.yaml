@@ -1,0 +1,10 @@
+# config/routes/api.yaml
+api_statistiques_journalieres:
+    path: /statistiques/journalieres
+    controller: App\Controller\Api\StatistiqueController::getStatistiquesJournalieres
+    methods: GET
+
+api_statistiques_periodique:
+    path: /statistiques/periodique
+    controller: App\Controller\Api\StatistiqueController::getStatistiquesPeriodique
+    methods: GET

@@ -1,0 +1,187 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Commande #{{ commande.id }} - Brasil Burger{% endblock %}
+
+{% block body %}
+<div class="container-fluid">
+    <div class="row mb-4">
+        <div class="col-12">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item">
+                        <a href="{{ path('gestion_dashboard') }}">Tableau de bord</a>
+                    </li>
+                    <li class="breadcrumb-item">
+                        <a href="{{ path('gestion_commande_index') }}">Commandes</a>
+                    </li>
+                    <li class="breadcrumb-item active">Commande #{{ commande.id }}</li>
+                </ol>
+            </nav>
+            
+            <div class="d-flex justify-content-between align-items-center">
+                <h1 class="h3 mb-0">
+                    <i class="fas fa-shopping-cart me-2"></i>Commande #{{ commande.id }}
+                </h1>
+                <a href="{{ path('gestion_commande_index') }}" class="btn btn-secondary">
+                    <i class="fas fa-arrow-left me-2"></i>Retour
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Informations client -->
+        <div class="col-lg-4 mb-4">
+            <div class="card">
+                <div class="card-header">
+                    <h6 class="mb-0 font-weight-bold">
+                        <i class="fas fa-user me-2"></i>Informations client
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <dl class="row">
+                        <dt class="col-sm-4">Nom</dt>
+                        <dd class="col-sm-8">{{ commande.client.nom }} {{ commande.client.prenom }}</dd>
+                        
+                        <dt class="col-sm-4">Téléphone</dt>
+                        <dd class="col-sm-8">{{ commande.client.telephone }}</dd>
+                        
+                        <dt class="col-sm-4">Email</dt>
+                        <dd class="col-sm-8">{{ commande.client.email }}</dd>
+                        
+                        <dt class="col-sm-4">Adresse</dt>
+                        <dd class="col-sm-8">{{ commande.client.adresse|default('Non renseignée') }}</dd>
+                    </dl>
+                </div>
+            </div>
+            
+            <!-- Informations commande -->
+            <div class="card mt-4">
+                <div class="card-header">
+                    <h6 class="mb-0 font-weight-bold">
+                        <i class="fas fa-info-circle me-2"></i>Informations commande
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <dl class="row">
+                        <dt class="col-sm-4">Date</dt>
+                        <dd class="col-sm-8">{{ commande.dateCommande|date('d/m/Y H:i') }}</dd>
+                        
+                        <dt class="col-sm-4">État</dt>
+                        <dd class="col-sm-8">
+                            <span class="badge badge-etat badge-{{ commande.etat|lower|replace({'_': '-'}) }}">
+                                {{ commande.etat }}
+                            </span>
+                        </dd>
+                        
+                        <dt class="col-sm-4">Type</dt>
+                        <dd class="col-sm-8">
+                            {% if commande.typeLivraison == 'SUR_PLACE' %}
+                                <span class="badge bg-secondary">Sur place</span>
+                            {% elseif commande.typeLivraison == 'A_EMPORTER' %}
+                                <span class="badge bg-info">À emporter</span>
+                            {% else %}
+                                <span class="badge bg-warning">Livraison</span>
+                            {% endif %}
+                        </dd>
+                        
+                        <dt class="col-sm-4">Total</dt>
+                        <dd class="col-sm-8">
+                            <strong>{{ commande.total|number_format(0, ',', ' ') }} FCFA</strong>
+                        </dd>
+                        
+                        <dt class="col-sm-4">Payée</dt>
+                        <dd class="col-sm-8">
+                            {% if commande.payee %}
+                                <span class="badge bg-success">Oui</span>
+                            {% else %}
+                                <span class="badge bg-danger">Non</span>
+                            {% endif %}
+                        </dd>
+                    </dl>
+                </div>
+            </div>
+        </div>
+
+        <!-- Détails commande -->
+        <div class="col-lg-8 mb-4">
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h6 class="mb-0 font-weight-bold">
+                        <i class="fas fa-list me-2"></i>Détails de la commande
+                    </h6>
+                    
+                    <!-- Actions -->
+                    <div class="btn-group">
+                        {% if commande.etat == 'EN_ATTENTE' %}
+                            <form method="post" action="{{ path('gestion_commande_valider', {'id': commande.id}) }}">
+                                <input type="hidden" name="_token" value="{{ csrf_token('validate' ~ commande.id) }}">
+                                <button type="submit" class="btn btn-success btn-sm">
+                                    <i class="fas fa-check me-1"></i>Valider
+                                </button>
+                            </form>
+                            <form method="post" action="{{ path('gestion_commande_annuler', {'id': commande.id}) }}">
+                                <input type="hidden" name="_token" value="{{ csrf_token('cancel' ~ commande.id) }}">
+                                <button type="submit" class="btn btn-danger btn-sm">
+                                    <i class="fas fa-times me-1"></i>Annuler
+                                </button>
+                            </form>
+                        {% endif %}
+                        
+                        {% if commande.etat == 'VALIDEE' %}
+                            <form method="post" action="{{ path('gestion_commande_preparer', {'id': commande.id}) }}">
+                                <input type="hidden" name="_token" value="{{ csrf_token('prepare' ~ commande.id) }}">
+                                <button type="submit" class="btn btn-warning btn-sm">
+                                    <i class="fas fa-utensils me-1"></i>Préparer
+                                </button>
+                            </form>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Produit</th>
+                                    <th>Quantité</th>
+                                    <th>Prix unitaire</th>
+                                    <th>Total</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for item in commande.commandeItems %}
+                                <tr>
+                                    <td>
+                                        {% if item.burger %}
+                                            {{ item.burger.nom }}
+                                        {% elseif item.menu %}
+                                            {{ item.menu.nom }}
+                                        {% elseif item.complement %}
+                                            {{ item.complement.nom }}
+                                        {% endif %}
+                                    </td>
+                                    <td>{{ item.quantite }}</td>
+                                    <td>{{ item.prixUnitaire|number_format(0, ',', ' ') }} FCFA</td>
+                                    <td>{{ item.total|number_format(0, ',', ' ') }} FCFA</td>
+                                </tr>
+                                {% else %}
+                                <tr>
+                                    <td colspan="4" class="text-center">Aucun item dans cette commande</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <td colspan="3" class="text-end"><strong>Total commande</strong></td>
+                                    <td><strong>{{ commande.total|number_format(0, ',', ' ') }} FCFA</strong></td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -7,5 +7,44 @@
 # To list all registered routes, run the following command:
 #   bin/console debug:router
 
+# controllers:
+#     resource:
+#         path: ../src/Controller/
+#         namespace: App\Controller
+#     type: attribute
+
+# # Routes API
+# api:
+#     resource: ../config/routes/api.yaml
+#     prefix: /api
+
+# # Routes Gestion
+# gestion:
+#     resource: ../config/routes/gestion.yaml
+#     prefix: /gestion
+
+# config/routes.yaml
+
+# Route racine
+home:
+    path: /
+    controller: App\Controller\HomeController::index
+
+# Routes API
+api:
+    resource: routes/api.yaml
+    prefix: /api
+
+# Routes Gestion
+gestion:
+    resource: routes/gestion.yaml
+    prefix: /gestion
+
+# Routes automatiques des contrôleurs
+    
 controllers:
-    resource: routing.controllers
+    resource:
+        path: ../src/Controller/
+        namespace: App\Controller
+    type: attribute
+

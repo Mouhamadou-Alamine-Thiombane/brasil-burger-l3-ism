@@ -1,0 +1,103 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Aide - Brasil Burger{% endblock %}
+
+{% block body %}
+<div class="container-fluid">
+    <div class="row mb-4">
+        <div class="col-12">
+            <h1 class="h3 mb-0">
+                <i class="fas fa-question-circle me-2"></i>Aide & Support
+            </h1>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h6 class="mb-0 font-weight-bold">
+                        <i class="fas fa-book me-2"></i>Guide d'utilisation
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <h5>Gestion des commandes</h5>
+                    <ul>
+                        <li>Visualisez toutes les commandes dans la section "Commandes"</li>
+                        <li>Cliquez sur une commande pour voir les détails</li>
+                        <li>Changez l'état des commandes selon leur progression</li>
+                        <li>Pour les livraisons, affectez un livreur disponible</li>
+                    </ul>
+                    
+                    <h5 class="mt-4">Gestion des produits</h5>
+                    <ul>
+                        <li>Ajoutez, modifiez ou archivez les burgers</li>
+                        <li>Créez des menus combinant burgers et compléments</li>
+                        <li>Gérez les compléments (frites et boissons)</li>
+                    </ul>
+                    
+                    <h5 class="mt-4">Gestion des clients</h5>
+                    <ul>
+                        <li>Consultez la liste des clients</li>
+                        <li>Visualisez l'historique des commandes d'un client</li>
+                    </ul>
+                    
+                    <h5 class="mt-4">Statistiques</h5>
+                    <ul>
+                        <li>Tableau de bord avec vue d'ensemble</li>
+                        <li>Statistiques détaillées par jour</li>
+                        <li>Top des burgers les plus vendus</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h6 class="mb-0 font-weight-bold">
+                        <i class="fas fa-life-ring me-2"></i>Support
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <p class="text-muted">
+                        <i class="fas fa-envelope me-2"></i>
+                        <strong>Email :</strong> support@brasilburger.sn
+                    </p>
+                    <p class="text-muted">
+                        <i class="fas fa-phone me-2"></i>
+                        <strong>Téléphone :</strong> +221 33 123 45 67
+                    </p>
+                    <p class="text-muted">
+                        <i class="fas fa-clock me-2"></i>
+                        <strong>Horaires :</strong> 9h-18h du lundi au samedi
+                    </p>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <h6 class="mb-0 font-weight-bold">
+                        <i class="fas fa-bug me-2"></i>Rapporter un problème
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <p class="text-muted small mb-3">
+                        Si vous rencontrez un problème technique, veuillez :
+                    </p>
+                    <ol class="text-muted small">
+                        <li>Décrire précisément le problème</li>
+                        <li>Indiquer les étapes pour le reproduire</li>
+                        <li>Préciser la date et l'heure</li>
+                        <li>Envoyer un email au support</li>
+                    </ol>
+                    
+                    <a href="{{ path('gestion_dashboard') }}" class="btn btn-primary mt-3 w-100">
+                        <i class="fas fa-arrow-left me-2"></i>Retour au tableau de bord
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

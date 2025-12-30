@@ -1,0 +1,334 @@
+# # Route d'accueil
+# gestion_dashboard:
+#     path: /
+#     controller: App\Controller\Gestion\DashboardController::dashboard
+#     methods: GET
+
+# # Dashboard et statistiques
+# gestion_statistiques:
+#     path: /statistiques
+#     controller: App\Controller\Gestion\DashboardController::statistiques
+#     methods: GET
+
+# gestion_aide:
+#     path: /aide
+#     controller: App\Controller\Gestion\DashboardController::aide
+#     methods: GET
+
+# # Commandes
+# gestion_commande_index:
+#     path: /commandes
+#     controller: App\Controller\Gestion\CommandeController::index
+#     methods: GET
+
+# gestion_commande_show:
+#     path: /commandes/{id}
+#     controller: App\Controller\Gestion\CommandeController::show
+#     methods: GET
+
+# gestion_commande_valider:
+#     path: /commandes/{id}/valider
+#     controller: App\Controller\Gestion\CommandeController::valider
+#     methods: POST
+
+# gestion_commande_annuler:
+#     path: /commandes/{id}/annuler
+#     controller: App\Controller\Gestion\CommandeController::annuler
+#     methods: POST
+
+# gestion_commande_preparer:
+#     path: /commandes/{id}/preparer
+#     controller: App\Controller\Gestion\CommandeController::preparer
+#     methods: POST
+
+# gestion_commande_terminer:
+#     path: /commandes/{id}/terminer
+#     controller: App\Controller\Gestion\CommandeController::terminer
+#     methods: POST
+
+# gestion_commande_livrer:
+#     path: /commandes/{id}/livrer
+#     controller: App\Controller\Gestion\CommandeController::livrer
+#     methods: POST
+
+# gestion_commande_livree:
+#     path: /commandes/{id}/livree
+#     controller: App\Controller\Gestion\CommandeController::livree
+#     methods: POST
+
+# gestion_commande_affectation_livraison:
+#     path: /commandes/affectation-livraison
+#     controller: App\Controller\Gestion\CommandeController::affectationLivraison
+#     methods: [GET, POST]
+
+# # Burgers
+# gestion_burger_index:
+#     path: /burgers
+#     controller: App\Controller\Gestion\BurgerController::index
+#     methods: GET
+
+# gestion_burger_new:
+#     path: /burgers/nouveau
+#     controller: App\Controller\Gestion\BurgerController::new
+#     methods: [GET, POST]
+
+# gestion_burger_edit:
+#     path: /burgers/{id}/modifier
+#     controller: App\Controller\Gestion\BurgerController::edit
+#     methods: [GET, POST]
+
+# gestion_burger_archive:
+#     path: /burgers/{id}/archiver
+#     controller: App\Controller\Gestion\BurgerController::archive
+#     methods: POST
+
+# gestion_burger_delete:
+#     path: /burgers/{id}/supprimer
+#     controller: App\Controller\Gestion\BurgerController::delete
+#     methods: POST
+
+# # Menus
+# gestion_menu_index:
+#     path: /menus
+#     controller: App\Controller\Gestion\MenuController::index
+#     methods: GET
+
+# gestion_menu_new:
+#     path: /menus/nouveau
+#     controller: App\Controller\Gestion\MenuController::new
+#     methods: [GET, POST]
+
+# gestion_menu_edit:
+#     path: /menus/{id}/modifier
+#     controller: App\Controller\Gestion\MenuController::edit
+#     methods: [GET, POST]
+
+# gestion_menu_archive:
+#     path: /menus/{id}/archiver
+#     controller: App\Controller\Gestion\MenuController::archive
+#     methods: POST
+
+# gestion_menu_delete:
+#     path: /menus/{id}/supprimer
+#     controller: App\Controller\Gestion\MenuController::delete
+#     methods: POST
+
+# # Compléments
+# gestion_complement_index:
+#     path: /complements
+#     controller: App\Controller\Gestion\ComplementController::index
+#     methods: GET
+
+# gestion_complement_new:
+#     path: /complements/nouveau
+#     controller: App\Controller\Gestion\ComplementController::new
+#     methods: [GET, POST]
+
+# gestion_complement_edit:
+#     path: /complements/{id}/modifier
+#     controller: App\Controller\Gestion\ComplementController::edit
+#     methods: [GET, POST]
+
+# gestion_complement_archive:
+#     path: /complements/{id}/archiver
+#     controller: App\Controller\Gestion\ComplementController::archive
+#     methods: POST
+
+# gestion_complement_delete:
+#     path: /complements/{id}/supprimer
+#     controller: App\Controller\Gestion\ComplementController::delete
+#     methods: POST
+
+# # Clients
+# gestion_client_index:
+#     path: /clients
+#     controller: App\Controller\Gestion\ClientController::index
+#     methods: GET
+
+# gestion_client_show:
+#     path: /clients/{id}
+#     controller: App\Controller\Gestion\ClientController::show
+#     methods: GET
+
+# gestion_client_delete:
+#     path: /clients/{id}/supprimer
+#     controller: App\Controller\Gestion\ClientController::delete
+#     methods: POST
+
+# config/routes/gestion.yaml
+# Route d'accueil
+gestion_dashboard:
+    path: /
+    controller: App\Controller\Gestion\DashboardController::dashboard
+    methods: GET
+
+# Dashboard et statistiques
+gestion_statistiques:
+    path: /statistiques
+    controller: App\Controller\Gestion\DashboardController::statistiques
+    methods: GET
+
+gestion_aide:
+    path: /aide
+    controller: App\Controller\Gestion\DashboardController::aide
+    methods: GET
+
+# Commandes
+gestion_commande_index:
+    path: /commandes
+    controller: App\Controller\Gestion\CommandeController::index
+    methods: GET
+
+# PLACER CETTE ROUTE AVANT LES ROUTES AVEC {id}
+gestion_commande_affectation_livraison:
+    path: /commandes/affectation-livraison
+    controller: App\Controller\Gestion\CommandeController::affectationLivraison
+    methods: [GET, POST]
+
+gestion_commande_show:
+    path: /commandes/{id}
+    controller: App\Controller\Gestion\CommandeController::show
+    methods: GET
+    requirements:
+        id: '\d+'  # IMPORTANT: Spécifier que l'ID doit être numérique
+
+gestion_commande_valider:
+    path: /commandes/{id}/valider
+    controller: App\Controller\Gestion\CommandeController::valider
+    methods: POST
+    requirements:
+        id: '\d+'
+
+gestion_commande_annuler:
+    path: /commandes/{id}/annuler
+    controller: App\Controller\Gestion\CommandeController::annuler
+    methods: POST
+    requirements:
+        id: '\d+'
+
+gestion_commande_preparer:
+    path: /commandes/{id}/preparer
+    controller: App\Controller\Gestion\CommandeController::preparer
+    methods: POST
+    requirements:
+        id: '\d+'
+
+gestion_commande_terminer:
+    path: /commandes/{id}/terminer
+    controller: App\Controller\Gestion\CommandeController::terminer
+    methods: POST
+    requirements:
+        id: '\d+'
+
+gestion_commande_livrer:
+    path: /commandes/{id}/livrer
+    controller: App\Controller\Gestion\CommandeController::livrer
+    methods: POST
+    requirements:
+        id: '\d+'
+
+gestion_commande_livree:
+    path: /commandes/{id}/livree
+    controller: App\Controller\Gestion\CommandeController::livree
+    methods: POST
+    requirements:
+        id: '\d+'
+
+# gestion_commande_affectation_livraison:
+#     path: /commandes/affectation-livraison
+#     controller: App\Controller\Gestion\CommandeController::affectationLivraison
+#     methods: [GET, POST]
+
+# Burgers
+gestion_burger_index:
+    path: /burgers
+    controller: App\Controller\Gestion\BurgerController::index
+    methods: GET
+
+gestion_burger_new:
+    path: /burgers/nouveau
+    controller: App\Controller\Gestion\BurgerController::new
+    methods: [GET, POST]
+
+gestion_burger_edit:
+    path: /burgers/{id}/modifier
+    controller: App\Controller\Gestion\BurgerController::edit
+    methods: [GET, POST]
+
+gestion_burger_archive:
+    path: /burgers/{id}/archiver
+    controller: App\Controller\Gestion\BurgerController::archive
+    methods: POST
+
+gestion_burger_delete:
+    path: /burgers/{id}/supprimer
+    controller: App\Controller\Gestion\BurgerController::delete
+    methods: POST
+
+# Menus
+gestion_menu_index:
+    path: /menus
+    controller: App\Controller\Gestion\MenuController::index
+    methods: GET
+
+gestion_menu_new:
+    path: /menus/nouveau
+    controller: App\Controller\Gestion\MenuController::new
+    methods: [GET, POST]
+
+gestion_menu_edit:
+    path: /menus/{id}/modifier
+    controller: App\Controller\Gestion\MenuController::edit
+    methods: [GET, POST]
+
+gestion_menu_archive:
+    path: /menus/{id}/archiver
+    controller: App\Controller\Gestion\MenuController::archive
+    methods: POST
+
+gestion_menu_delete:
+    path: /menus/{id}/supprimer
+    controller: App\Controller\Gestion\MenuController::delete
+    methods: POST
+
+# Compléments
+gestion_complement_index:
+    path: /complements
+    controller: App\Controller\Gestion\ComplementController::index
+    methods: GET
+
+gestion_complement_new:
+    path: /complements/nouveau
+    controller: App\Controller\Gestion\ComplementController::new
+    methods: [GET, POST]
+
+gestion_complement_edit:
+    path: /complements/{id}/modifier
+    controller: App\Controller\Gestion\ComplementController::edit
+    methods: [GET, POST]
+
+gestion_complement_archive:
+    path: /complements/{id}/archiver
+    controller: App\Controller\Gestion\ComplementController::archive
+    methods: POST
+
+gestion_complement_delete:
+    path: /complements/{id}/supprimer
+    controller: App\Controller\Gestion\ComplementController::delete
+    methods: POST
+
+# Clients
+gestion_client_index:
+    path: /clients
+    controller: App\Controller\Gestion\ClientController::index
+    methods: GET
+
+gestion_client_show:
+    path: /clients/{id}
+    controller: App\Controller\Gestion\ClientController::show
+    methods: GET
+
+gestion_client_delete:
+    path: /clients/{id}/supprimer
+    controller: App\Controller\Gestion\ClientController::delete
+    methods: POST

@@ -1,0 +1,170 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Affectation des livraisons - Brasil Burger{% endblock %}
+
+{% block body %}
+<div class="container-fluid">
+    <div class="row mb-4">
+        <div class="col-12">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item">
+                        <a href="{{ path('gestion_dashboard') }}">Tableau de bord</a>
+                    </li>
+                    <li class="breadcrumb-item">
+                        <a href="{{ path('gestion_commande_index') }}">Commandes</a>
+                    </li>
+                    <li class="breadcrumb-item active">Affectation des livraisons</li>
+                </ol>
+            </nav>
+            
+            <div class="d-flex justify-content-between align-items-center">
+                <h1 class="h3 mb-0">
+                    <i class="fas fa-truck me-2"></i>Affectation des livraisons
+                </h1>
+                <a href="{{ path('gestion_commande_index') }}" class="btn btn-secondary">
+                    <i class="fas fa-arrow-left me-2"></i>Retour aux commandes
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Commandes prêtes à livrer -->
+        <div class="col-lg-8 mb-4">
+            <div class="card">
+                <div class="card-header">
+                    <h6 class="mb-0 font-weight-bold">
+                        <i class="fas fa-shopping-cart me-2"></i>Commandes prêtes à livrer
+                        <span class="badge bg-primary ms-2">{{ commandes|length }}</span>
+                    </h6>
+                </div>
+                <div class="card-body">
+                    {% if commandes is not empty %}
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>N° Commande</th>
+                                        <th>Client</th>
+                                        <th>Adresse</th>
+                                        <th>Zone</th>
+                                        <th>Total</th>
+                                        <th>Préparée à</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for commande in commandes %}
+                                    <tr>
+                                        <td><strong>#{{ commande.id }}</strong></td>
+                                        <td>
+                                            {{ commande.client.nom }} {{ commande.client.prenom }}
+                                            <br>
+                                            <small class="text-muted">{{ commande.client.telephone }}</small>
+                                        </td>
+                                        <td>
+                                            <small>{{ commande.adresseLivraison|default('Non spécifiée')|slice(0, 30) }}...</small>
+                                        </td>
+                                        <td>
+                                            {% if commande.zone %}
+                                                <span class="badge bg-info">{{ commande.zone.nom }}</span>
+                                            {% else %}
+                                                <span class="badge bg-warning">Non définie</span>
+                                            {% endif %}
+                                        </td>
+                                        <td>{{ commande.total|number_format(0, ',', ' ') }} FCFA</td>
+                                        <td>{{ commande.dateCommande|date('H:i') }}</td>
+                                        <td>
+                                            <form method="post" action="{{ path('gestion_commande_affectation_livraison') }}" 
+                                                  class="d-inline">
+                                                <input type="hidden" name="commande_id" value="{{ commande.id }}">
+                                                <select name="livreur_id" class="form-select form-select-sm" required>
+                                                    <option value="">Sélectionner un livreur</option>
+                                                    {% for livreur in livreurs %}
+                                                        {% if livreur.disponible %}
+                                                        <option value="{{ livreur.id }}">
+                                                            {{ livreur.nom }} {{ livreur.prenom }} - {{ livreur.vehicule|default('Sans véhicule') }}
+                                                        </option>
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                </select>
+                                                <button type="submit" class="btn btn-sm btn-success mt-1">
+                                                    <i class="fas fa-check me-1"></i>Affecter
+                                                </button>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    {% else %}
+                        <div class="text-center py-4">
+                            <i class="fas fa-check-circle fa-2x text-success mb-3"></i>
+                            <h4 class="text-success">Aucune commande à livrer</h4>
+                            <p class="text-muted">Toutes les commandes prêtes ont été affectées à un livreur.</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Livreurs disponibles -->
+        <div class="col-lg-4 mb-4">
+            <div class="card">
+                <div class="card-header">
+                    <h6 class="mb-0 font-weight-bold">
+                        <i class="fas fa-user-tie me-2"></i>Livreurs disponibles
+                        <span class="badge bg-success ms-2">{{ livreurs|filter(l => l.disponible)|length }}/{{ livreurs|length }}</span>
+                    </h6>
+                </div>
+                <div class="card-body">
+                    {% if livreurs is not empty %}
+                        <div class="list-group">
+                            {% for livreur in livreurs %}
+                            <div class="list-group-item">
+                                <div class="d-flex w-100 justify-content-between">
+                                    <h6 class="mb-1">{{ livreur.nom }} {{ livreur.prenom }}</h6>
+                                    {% if livreur.disponible %}
+                                        <span class="badge bg-success">Disponible</span>
+                                    {% else %}
+                                        <span class="badge bg-danger">Occupé</span>
+                                    {% endif %}
+                                </div>
+                                <p class="mb-1"><i class="fas fa-phone me-1"></i>{{ livreur.telephone }}<br><i class="fas fa-car me-1"></i>{{ livreur.vehicule|default('Sans véhicule') }}
+                                </p>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <div class="text-center py-4">
+                            <i class="fas fa-user-slash fa-2x text-warning mb-3"></i>
+                            <h4 class="text-warning">Aucun livreur</h4>
+                            <p class="text-muted">Aucun livreur n'est enregistré dans le système.</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Instructions -->
+            <div class="card mt-4">
+                <div class="card-header">
+                    <h6 class="mb-0 font-weight-bold">
+                        <i class="fas fa-info-circle me-2"></i>Instructions
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <ol class="mb-0">
+                        <li>Sélectionnez une commande prête à livrer</li>
+                        <li>Choisissez un livreur disponible</li>
+                        <li>Cliquez sur "Affecter"</li>
+                        <li>Le livreur sera notifié automatiquement</li>
+                        <li>La commande passera en "En livraison"</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

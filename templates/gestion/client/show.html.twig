@@ -1,0 +1,140 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Client {{ client.nom }} - Brasil Burger{% endblock %}
+
+{% block body %}
+<div class="container-fluid">
+    <div class="row mb-4">
+        <div class="col-12">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item">
+                        <a href="{{ path('gestion_dashboard') }}">Tableau de bord</a>
+                    </li>
+                    <li class="breadcrumb-item">
+                        <a href="{{ path('gestion_client_index') }}">Clients</a>
+                    </li>
+                    <li class="breadcrumb-item active">{{ client.nom }} {{ client.prenom }}</li>
+                </ol>
+            </nav>
+            
+            <div class="d-flex justify-content-between align-items-center">
+                <h1 class="h3 mb-0">
+                    <i class="fas fa-user me-2"></i>{{ client.nom }} {{ client.prenom }}
+                </h1>
+                <a href="{{ path('gestion_client_index') }}" class="btn btn-secondary">
+                    <i class="fas fa-arrow-left me-2"></i>Retour
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Informations client -->
+        <div class="col-lg-4 mb-4">
+            <div class="card">
+                <div class="card-header">
+                    <h6 class="mb-0 font-weight-bold">
+                        <i class="fas fa-info-circle me-2"></i>Informations client
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <dl class="row">
+                        <dt class="col-sm-4">Nom complet</dt>
+                        <dd class="col-sm-8">{{ client.nom }} {{ client.prenom }}</dd>
+                        
+                        <dt class="col-sm-4">Téléphone</dt>
+                        <dd class="col-sm-8">{{ client.telephone }}</dd>
+                        
+                        <dt class="col-sm-4">Email</dt>
+                        <dd class="col-sm-8">{{ client.email }}</dd>
+                        
+                        <dt class="col-sm-4">Adresse</dt>
+                        <dd class="col-sm-8">{{ client.adresse|default('Non renseignée') }}</dd>
+                        
+                        <dt class="col-sm-4">Inscrit le</dt>
+                        <dd class="col-sm-8">{{ client.createdAt|date('d/m/Y à H:i') }}</dd>
+                        
+                        <dt class="col-sm-4">Total commandes</dt>
+                        <dd class="col-sm-8">
+                            <span class="badge bg-primary">{{ client.commandes|length }}</span>
+                        </dd>
+                    </dl>
+                </div>
+            </div>
+        </div>
+
+        <!-- Historique des commandes -->
+        <div class="col-lg-8 mb-4">
+            <div class="card">
+                <div class="card-header">
+                    <h6 class="mb-0 font-weight-bold">
+                        <i class="fas fa-history me-2"></i>Historique des commandes
+                    </h6>
+                </div>
+                <div class="card-body">
+                    {% if commandes is not empty %}
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>N° Commande</th>
+                                        <th>Date</th>
+                                        <th>Total</th>
+                                        <th>État</th>
+                                        <th>Type</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for commande in commandes|slice(0, 10) %}
+                                    <tr>
+                                        <td><strong>#{{ commande.id }}</strong></td>
+                                        <td>{{ commande.dateCommande|date('d/m/Y H:i') }}</td>
+                                        <td>{{ commande.total|format_currency('XOF') }}</td>
+                                        <td>
+                                            <span class="badge badge-etat badge-{{ commande.etat.value|lower|replace({'_': '-'}) }}">
+                                                {{ commande.etat.value }}
+                                            </span>
+                                        </td>
+                                        <td>
+                                            {% if commande.typeLivraison == 'SUR_PLACE' %}
+                                                <span class="badge bg-secondary">Sur place</span>
+                                            {% elseif commande.typeLivraison == 'A_EMPORTER' %}
+                                                <span class="badge bg-info">À emporter</span>
+                                            {% else %}
+                                                <span class="badge bg-warning">Livraison</span>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            <a href="{{ path('gestion_commande_show', {'id': commande.id}) }}" 
+                                               class="btn btn-sm btn-outline-primary">
+                                                <i class="fas fa-eye"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        
+                        {% if commandes|length > 10 %}
+                        <div class="text-center mt-3">
+                            <a href="{{ path('gestion_commande_index') }}?search={{ client.telephone }}" 
+                               class="btn btn-sm btn-outline-secondary">
+                                Voir toutes les commandes ({{ commandes|length }})
+                            </a>
+                        </div>
+                        {% endif %}
+                    {% else %}
+                        <div class="text-center py-4">
+                            <i class="fas fa-shopping-cart fa-2x text-muted mb-3"></i>
+                            <p class="text-muted">Ce client n'a pas encore passé de commande</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,12 +1,17 @@
 doctrine:
     dbal:
         url: '%env(resolve:DATABASE_URL)%'
-
-        # IMPORTANT: You MUST configure your server version,
-        # either here or in the DATABASE_URL env var (see .env file)
-        #server_version: '16'
-
+        server_version: '15'
         profiling_collect_backtrace: '%kernel.debug%'
+        
+        # Types personnalisés - UN SEUL BLOC "types"
+        # types:
+        #     etat_commande: App\Entity\EtatCommande
+        
+        # IMPORTANT: Pour PostgreSQL avec énumérations natives
+        mapping_types:
+            etat_commande: string
+
     orm:
         validate_xml_mapping: true
         naming_strategy: doctrine.orm.naming_strategy.underscore_number_aware
@@ -26,7 +31,6 @@ doctrine:
 when@test:
     doctrine:
         dbal:
-            # "TEST_TOKEN" is typically set by ParaTest
             dbname_suffix: '_test%env(default::TEST_TOKEN)%'
 
 when@prod:

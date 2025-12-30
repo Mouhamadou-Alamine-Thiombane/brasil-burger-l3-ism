@@ -1,0 +1,156 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Statistiques - Brasil Burger{% endblock %}
+
+{% block body %}
+<div class="container-fluid">
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center">
+                <h1 class="h3 mb-0">
+                    <i class="fas fa-chart-bar me-2"></i>Statistiques détaillées
+                </h1>
+                <div>
+                    <span class="badge bg-primary">{{ date|date('d/m/Y') }}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h6 class="mb-0 font-weight-bold">
+                        <i class="fas fa-shopping-cart me-2"></i>Statistiques du jour
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <div class="row text-center">
+                        <div class="col-md-3 mb-3">
+                            <div class="stat-card stat-card-primary">
+                                <div class="h2 mb-0">{{ statistiques.commandesEnCours|length }}</div>
+                                <div class="text-muted">Commandes en cours</div>
+                            </div>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <div class="stat-card stat-card-success">
+                                <div class="h2 mb-0">{{ statistiques.commandesValidees[0].count|default(0) }}</div>
+                                <div class="text-muted">Commandes validées</div>
+                            </div>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <div class="stat-card stat-card-info">
+                                <div class="h2 mb-0">{{ statistiques.recetteJournaliere|number_format(0, ',', ' ') }} FCFA</div>
+                                <div class="text-muted">Recette journalière</div>
+                            </div>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <div class="stat-card stat-card-danger">
+                                <div class="h2 mb-0">{{ statistiques.commandesAnnulees[0].count|default(0) }}</div>
+                                <div class="text-muted">Commandes annulées</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <h6 class="mb-0 font-weight-bold">
+                        <i class="fas fa-hamburger me-2"></i>Top burgers du jour
+                    </h6>
+                </div>
+                <div class="card-body">
+                    {% if statistiques.burgersPlusVendus is not empty %}
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Burger</th>
+                                        <th>Quantité vendue</th>
+                                        <th>Chiffre d'affaires</th>
+                                        <th>Pourcentage</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% set maxQuantity = statistiques.burgersPlusVendus|first.quantite_vendue|default(1) %}
+                                    {% for burger in statistiques.burgersPlusVendus %}
+                                    <tr>
+                                        <td>{{ burger.nom }}</td>
+                                        <td>{{ burger.quantite_vendue }}</td>
+                                        <td>{{ burger.chiffre_affaires|number_format(0, ',', ' ') }} FCFA</td>
+                                        <td>
+                                            <div class="progress" style="height: 20px;">
+                                                <div class="progress-bar bg-success" 
+                                                     style="width: {{ (burger.quantite_vendue/maxQuantity)*100 }}%">
+                                                    {{ ((burger.quantite_vendue/maxQuantity)*100)|round(1) }}%
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    {% else %}
+                        <div class="text-center py-4">
+                            <i class="fas fa-chart-line fa-2x text-muted mb-3"></i>
+                            <p class="text-muted">Aucune donnée de vente aujourd'hui</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h6 class="mb-0 font-weight-bold">
+                        <i class="fas fa-info-circle me-2"></i>Informations
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <p class="text-muted">
+                        <i class="fas fa-clock me-2"></i>
+                        Les statistiques sont mises à jour en temps réel.
+                    </p>
+                    <p class="text-muted">
+                        <i class="fas fa-calendar me-2"></i>
+                        Données du jour seulement.
+                    </p>
+                    <p class="text-muted">
+                        <i class="fas fa-sync me-2"></i>
+                        Rechargez la page pour actualiser.
+                    </p>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <h6 class="mb-0 font-weight-bold">
+                        <i class="fas fa-filter me-2"></i>Filtres
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <form method="get" class="mb-3">
+                        <div class="mb-3">
+                            <label class="form-label">Date</label>
+                            <input type="date" name="date" class="form-control" value="{{ date|date('Y-m-d') }}">
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100">
+                            <i class="fas fa-search me-2"></i>Appliquer
+                        </button>
+                    </form>
+                    
+                    <div class="d-grid gap-2">
+                        <a href="{{ path('gestion_dashboard') }}" class="btn btn-outline-primary">
+                            <i class="fas fa-arrow-left me-2"></i>Retour au tableau de bord
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
