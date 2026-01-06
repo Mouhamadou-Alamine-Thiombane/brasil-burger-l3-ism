@@ -17,7 +17,8 @@ namespace BrasilBurger.Models
         public Client? Client { get; set; }
        
         [Column("etat")]
-        public EtatCommande Etat { get; set; } = EtatCommande.EN_ATTENTE; // ← Utilisez l'enum
+        //public EtatCommande Etat { get; set; } = EtatCommande.EN_ATTENTE; // ← Utilisez l'enum
+        public string Etat { get; set; } = "EN_ATTENTE";
        
         [Required]
         [Column("type_livraison")]

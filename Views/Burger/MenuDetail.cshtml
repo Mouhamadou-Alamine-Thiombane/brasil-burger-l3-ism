@@ -1,0 +1,108 @@
+@model BrasilBurger.ViewModels.MenuViewModel
+@{
+    ViewData["Title"] = Model.Nom;
+}
+
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card">
+                <img src="@(string.IsNullOrEmpty(Model.Image) ? "/images/default-menu.jpg" : Model.Image)" 
+                     class="card-img-top" 
+                     alt="@Model.Nom"
+                     style="height: 400px; object-fit: cover;">
+            </div>
+        </div>
+        
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-body">
+                    <h1 class="card-title">@Model.Nom</h1>
+                    <h3 class="text-primary">@Model.Prix.ToString("N0") FCFA</h3>
+                    
+                    <div class="mb-4">
+                        <h5>Composition du menu</h5>
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                <div>
+                                    <strong>Burger:</strong> @Model.Burger.Nom
+                                    <br>
+                                    <small class="text-muted">@Model.Burger.Description</small>
+                                </div>
+                                <span class="badge bg-primary rounded-pill">Inclus</span>
+                            </li>
+                            
+                            @if (Model.Frite != null)
+                            {
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <strong>Frites:</strong> @Model.Frite.Nom
+                                    </div>
+                                    <span class="badge bg-primary rounded-pill">Inclus</span>
+                                </li>
+                            }
+                            
+                            @if (Model.Boisson != null)
+                            {
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <strong>Boisson:</strong> @Model.Boisson.Nom
+                                    </div>
+                                    <span class="badge bg-primary rounded-pill">Inclus</span>
+                                </li>
+                            }
+                        </ul>
+                    </div>
+                    
+                    <div class="d-grid gap-2">
+                        @if (ViewBag.IsAuthenticated == true)
+                        {
+                            <a href="/Burger/CommanderMenu/@Model.Id" class="btn btn-primary btn-lg">
+                                <i class="fas fa-shopping-cart"></i> Commander maintenant
+                            </a>
+                        }
+                        else
+                        {
+                            <a href="/Auth/Login?returnUrl=/Burger/CommanderMenu/@Model.Id" class="btn btn-primary btn-lg">
+                                <i class="fas fa-sign-in-alt"></i> Se connecter pour commander
+                            </a>
+                        }
+                        <a href="/Home/Catalogue?type=menus" class="btn btn-outline-secondary">
+                            <i class="fas fa-arrow-left"></i> Retour au catalogue
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card mt-4">
+                <div class="card-header">
+                    <h5 class="mb-0">À propos de ce menu</h5>
+                </div>
+                <div class="card-body">
+                    <p>Ce menu complet vous offre le meilleur rapport qualité/prix. Profitez d'un repas équilibré avec notre burger maison, accompagné de frites croustillantes et d'une boisson rafraîchissante.</p>
+                    <p class="mb-0">
+                        <small class="text-muted">
+                            <i class="fas fa-clock"></i> Préparation: 20-30 minutes
+                            <br>
+                            <i class="fas fa-truck"></i> Livraison disponible
+                        </small>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Styles {
+    <style>
+        .list-group-item {
+            border: none;
+            padding: 1rem 0;
+        }
+        
+        .badge {
+            font-size: 0.9rem;
+            padding: 0.5rem 1rem;
+        }
+    </style>
+}

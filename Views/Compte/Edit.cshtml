@@ -1,0 +1,101 @@
+@model BrasilBurger.ViewModels.UpdateCompteViewModel
+@{
+    ViewData["Title"] = "Modifier mon profil";
+}
+
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0"><i class="fas fa-edit me-2"></i>Modifier mon profil</h4>
+                </div>
+                <div class="card-body">
+                    @if (TempData["SuccessMessage"] != null)
+                    {
+                        <div class="alert alert-success">
+                            @TempData["SuccessMessage"]
+                        </div>
+                    }
+                    
+                    <form asp-action="Edit" method="post">
+                        @Html.AntiForgeryToken()
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label asp-for="Nom" class="form-label">Nom *</label>
+                                    <input asp-for="Nom" class="form-control" />
+                                    <span asp-validation-for="Nom" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label asp-for="Prenom" class="form-label">Prénom *</label>
+                                    <input asp-for="Prenom" class="form-control" />
+                                    <span asp-validation-for="Prenom" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label asp-for="Email" class="form-label">Email *</label>
+                                    <input asp-for="Email" type="email" class="form-control" />
+                                    <span asp-validation-for="Email" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label asp-for="Telephone" class="form-label">Téléphone *</label>
+                                    <input asp-for="Telephone" class="form-control" />
+                                    <span asp-validation-for="Telephone" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label asp-for="Adresse" class="form-label">Adresse</label>
+                            <textarea asp-for="Adresse" class="form-control" rows="3"></textarea>
+                            <span asp-validation-for="Adresse" class="text-danger"></span>
+                        </div>
+                        
+                        <h5 class="mt-4 mb-3">Changer le mot de passe (optionnel)</h5>
+                        
+                        <div class="mb-3">
+                            <label asp-for="CurrentPassword" class="form-label">Mot de passe actuel</label>
+                            <input asp-for="CurrentPassword" type="password" class="form-control" />
+                            <span asp-validation-for="CurrentPassword" class="text-danger"></span>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label asp-for="NewPassword" class="form-label">Nouveau mot de passe</label>
+                            <input asp-for="NewPassword" type="password" class="form-control" />
+                            <span asp-validation-for="NewPassword" class="text-danger"></span>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label asp-for="ConfirmNewPassword" class="form-label">Confirmer le nouveau mot de passe</label>
+                            <input asp-for="ConfirmNewPassword" type="password" class="form-control" />
+                            <span asp-validation-for="ConfirmNewPassword" class="text-danger"></span>
+                        </div>
+                        
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary btn-lg">
+                                <i class="fas fa-save me-2"></i>Enregistrer les modifications
+                            </button>
+                            <a asp-action="Index" class="btn btn-outline-secondary">
+                                <i class="fas fa-arrow-left me-2"></i>Annuler
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

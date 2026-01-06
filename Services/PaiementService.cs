@@ -15,56 +15,57 @@ namespace BrasilBurger.Services
         }
 
         public async Task<Paiement> ProcessPaiementAsync(PaiementViewModel model)
-{
-    // Pour Neon PostgreSQL avec retry
-    var executionStrategy = _context.Database.CreateExecutionStrategy();
-    
-    return await executionStrategy.ExecuteAsync(async () =>
-    {
-        using var transaction = await _context.Database.BeginTransactionAsync();
-
-        try
         {
-            var commande = await _context.Commandes
-                .FirstOrDefaultAsync(c => c.Id == model.CommandeId);
-
-            if (commande == null)
-                throw new Exception("Commande non trouvée");
-
-            if (commande.Payee)
-                throw new Exception("Cette commande a déjà été payée");
-
-            var paiement = new Paiement
+            // Pour Neon PostgreSQL avec retry
+            var executionStrategy = _context.Database.CreateExecutionStrategy();
+            
+            return await executionStrategy.ExecuteAsync(async () =>
             {
-                CommandeId = model.CommandeId,
-                Montant = model.Montant,
-                Methode = model.Methode,
-                Reference = model.Reference,
-                DatePaiement = DateTime.Now,
-                Archived = false,
-                CreatedAt = DateTime.Now,
-                UpdatedAt = DateTime.Now
-            };
+                using var transaction = await _context.Database.BeginTransactionAsync();
 
-            _context.Paiements.Add(paiement);
+                try
+                {
+                    var commande = await _context.Commandes
+                        .FirstOrDefaultAsync(c => c.Id == model.CommandeId);
 
-            // Update commande status
-            commande.Payee = true;
-            commande.Etat = EtatCommande.VALIDEE;
-            commande.UpdatedAt = DateTime.UtcNow;
+                    if (commande == null)
+                        throw new Exception("Commande non trouvée");
 
-            await _context.SaveChangesAsync();
-            await transaction.CommitAsync();
+                    if (commande.Payee)
+                        throw new Exception("Cette commande a déjà été payée");
 
-            return paiement;
+                    var paiement = new Paiement
+                    {
+                        CommandeId = model.CommandeId,
+                        Montant = model.Montant,
+                        Methode = model.Methode,
+                        Reference = model.Reference,
+                        DatePaiement = DateTime.Now,
+                        Archived = false,
+                        CreatedAt = DateTime.Now,
+                        UpdatedAt = DateTime.Now
+                    };
+
+                    _context.Paiements.Add(paiement);
+
+                    // Update commande status
+                    commande.Payee = true;
+                    // ⭐⭐ Utilisez "VALIDEE" (string) au lieu de EtatCommande.VALIDEE (enum) ⭐⭐
+                    commande.Etat = "VALIDEE";
+                    commande.UpdatedAt = DateTime.UtcNow;
+
+                    await _context.SaveChangesAsync();
+                    await transaction.CommitAsync();
+
+                    return paiement;
+                }
+                catch (Exception)
+                {
+                    await transaction.RollbackAsync();
+                    throw;
+                }
+            });
         }
-        catch (Exception)
-        {
-            await transaction.RollbackAsync();
-            throw;
-        }
-    });
-}
 
         public async Task<PaiementConfirmationViewModel?> GetPaiementConfirmationAsync(int paiementId)
         {
@@ -94,5 +95,30 @@ namespace BrasilBurger.Services
             return await _context.Paiements
                 .FirstOrDefaultAsync(p => p.CommandeId == commandeId);
         }
+
+        public async Task<Paiement?> GetPaiementByIdAsync(int paiementId)
+{
+    try
+    {
+        Console.WriteLine($"⏳ Recherche paiement ID: {paiementId}");
+        var paiement = await _context.Paiements
+            .Where(p => p.Id == paiementId && !p.Archived)
+            .FirstOrDefaultAsync();
+        
+        Console.WriteLine($"✅ Paiement trouvé: {paiement != null}");
+        if (paiement != null)
+        {
+            Console.WriteLine($"   - ID: {paiement.Id}");
+            Console.WriteLine($"   - CommandeId: {paiement.CommandeId}");
+            Console.WriteLine($"   - Montant: {paiement.Montant}");
+        }
+        return paiement;
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine($"❌ Erreur recherche paiement: {ex.Message}");
+        return null;
+    }
+}
     }
 }

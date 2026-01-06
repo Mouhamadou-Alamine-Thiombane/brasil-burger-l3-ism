@@ -99,22 +99,43 @@ namespace BrasilBurger.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Confirmation(int paiementId)
-        {
-            if (!_sessionService.IsAuthenticated())
-            {
-                return RedirectToAction("Login", "Auth");
-            }
+public async Task<IActionResult> Confirmation(int paiementId)
+{
+    Console.WriteLine($"=== CONFIRMATION PAIEMENT ID: {paiementId} ===");
+    
+    if (!_sessionService.IsAuthenticated())
+    {
+        return RedirectToAction("Login", "Auth");
+    }
 
-            var confirmation = await _paiementService.GetPaiementConfirmationAsync(paiementId);
-            if (confirmation == null)
-            {
-                return NotFound();
-            }
+    var paiement = await _paiementService.GetPaiementByIdAsync(paiementId);
+    
+    if (paiement == null)
+    {
+        Console.WriteLine($"❌ Paiement {paiementId} non trouvé");
+        return NotFound();
+    }
 
-            ViewBag.IsAuthenticated = true;
-            ViewBag.ClientNom = _sessionService.GetClientNom() ?? string.Empty;
-            return View(confirmation);
-        }
+    var clientId = _sessionService.GetClientId();
+    if (!clientId.HasValue)
+    {
+        return RedirectToAction("Login", "Auth");
+    }
+
+    // ✅ Utilisez la nouvelle méthode qui retourne un Commande (modèle EF)
+    var commande = await _commandeService.GetCommandeByIdAsync(paiement.CommandeId, clientId.Value);
+    
+    if (commande == null)
+    {
+        Console.WriteLine($"❌ Commande {paiement.CommandeId} non trouvée");
+        return NotFound();
+    }
+
+    ViewBag.Paiement = paiement;
+    ViewBag.IsAuthenticated = true;
+    ViewBag.ClientNom = _sessionService.GetClientNom() ?? string.Empty;
+    
+    return View(commande);
+}
     }
 }

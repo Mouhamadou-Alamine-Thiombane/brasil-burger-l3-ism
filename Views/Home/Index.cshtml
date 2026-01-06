@@ -25,7 +25,8 @@
                     <p class="burger-description">@burger.Description</p>
                     <div class="burger-footer">
                         <span class="burger-price">@burger.Prix.ToString("N0") FCFA</span>
-                        <a href="/Burger/CommanderBurger/@burger.Id" class="btn-order">Commander</a>
+                        @* <a href="/Burger/CommanderBurger/@burger.Id" class="btn-order">Commander</a> *@
+                        <a href="/Burger/Detail/@burger.Id" class="btn-order">Voir détails</a>
                     </div>
                 </div>
             </div>
@@ -57,7 +58,8 @@
                     </div>
                     <div class="menu-footer">
                         <span class="menu-price">@menu.Prix.ToString("N0") FCFA</span>
-                        <a href="/Burger/CommanderMenu/@menu.Id" class="btn-order">Commander</a>
+                        @* <a href="/Burger/CommanderMenu/@menu.Id" class="btn-order">Commander</a> *@
+                        <a href="/Burger/MenuDetail/@menu.Id" class="btn-order">Voir détails</a>
                     </div>
                 </div>
             </div>

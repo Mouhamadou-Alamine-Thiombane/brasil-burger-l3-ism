@@ -669,6 +669,12 @@
           }
         }
       },
+      "Npgsql.EntityFrameworkCore.PostgreSQL.NodaTime/10.0.0": {
+        "type": "package",
+        "build": {
+          "build/netstandard2.0/Npgsql.EntityFrameworkCore.PostgreSQL.NodaTime.targets": {}
+        }
+      },
       "System.CodeDom/4.4.0": {
         "type": "package",
         "compile": {
@@ -1982,6 +1988,22 @@
         "postgresql.png"
       ]
     },
+    "Npgsql.EntityFrameworkCore.PostgreSQL.NodaTime/10.0.0": {
+      "sha512": "rOdtaU3eIJPP+qheKV1JqEy2WuJYuukr+rFVIH6xefcyJ9kGTTw/o7xGLOQMLbbfQBmiWjFv4lDxHSv79g0Fqg==",
+      "type": "package",
+      "path": "npgsql.entityframeworkcore.postgresql.nodatime/10.0.0",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "README.md",
+        "build/netstandard2.0/Npgsql.EntityFrameworkCore.PostgreSQL.NodaTime.targets",
+        "lib/net10.0/Npgsql.EntityFrameworkCore.PostgreSQL.NodaTime.dll",
+        "lib/net10.0/Npgsql.EntityFrameworkCore.PostgreSQL.NodaTime.xml",
+        "npgsql.entityframeworkcore.postgresql.nodatime.10.0.0.nupkg.sha512",
+        "npgsql.entityframeworkcore.postgresql.nodatime.nuspec",
+        "postgresql.png"
+      ]
+    },
     "System.CodeDom/4.4.0": {
       "sha512": "2sCCb7doXEwtYAbqzbF/8UAeDRMNmPaQbU2q50Psg1J9KzumyVVCgKQY8s53WIPTufNT0DpSe9QRvVjOzfDWBA==",
       "type": "package",
@@ -2412,7 +2434,8 @@
       "Microsoft.EntityFrameworkCore >= 8.0.0",
       "Microsoft.EntityFrameworkCore.Design >= 8.0.0",
       "Microsoft.EntityFrameworkCore.Tools >= 8.0.0",
-      "Npgsql.EntityFrameworkCore.PostgreSQL >= 8.0.0"
+      "Npgsql.EntityFrameworkCore.PostgreSQL >= 8.0.0",
+      "Npgsql.EntityFrameworkCore.PostgreSQL.NodaTime >= 10.0.0"
     ]
   },
   "packageFolders": {
@@ -2488,6 +2511,10 @@
           "Npgsql.EntityFrameworkCore.PostgreSQL": {
             "target": "Package",
             "version": "[8.0.0, )"
+          },
+          "Npgsql.EntityFrameworkCore.PostgreSQL.NodaTime": {
+            "target": "Package",
+            "version": "[10.0.0, )"
           }
         },
         "imports": [

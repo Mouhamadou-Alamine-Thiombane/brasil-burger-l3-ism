@@ -6,11 +6,20 @@
 <div class="container mt-4">
     <h1>Passer une commande</h1>
     
+    <!-- ✅ FIX: Afficher les erreurs -->
+    @if (!string.IsNullOrEmpty(ViewBag.ErrorMessage))
+    {
+        <div class="alert alert-danger">
+            @Html.Raw(ViewBag.ErrorMessage)
+        </div>
+    }
+    
     <div class="row">
         <div class="col-md-8">
             <div class="card">
                 <div class="card-body">
-                    <form asp-action="Create" asp-controller="Commande" method="post">
+                    <!-- ✅ FIX: Supprimez id="commandeForm" et utilisez juste form -->
+                    <form asp-action="Create" asp-controller="Commande" method="post" id="commandeForm">
                         @Html.AntiForgeryToken()
                         
                         <!-- Champs cachés pour l'ID du produit -->
@@ -32,40 +41,35 @@
                         <!-- Quantité -->
                         <div class="mb-3">
                             <label asp-for="Quantite" class="form-label">Quantité</label>
-                            <input asp-for="Quantite" class="form-control" type="number" min="1" value="1" />
-                            <span asp-validation-for="Quantite" class="text-danger"></span>
+                            <input asp-for="Quantite" class="form-control" type="number" min="1" value="@Model.Quantite" required />
                         </div>
                         
                         <!-- Type de livraison -->
                         <div class="mb-3">
                             <label asp-for="TypeLivraison" class="form-label">Type de livraison</label>
-                            <select asp-for="TypeLivraison" class="form-control" id="typeLivraison">
+                            <select asp-for="TypeLivraison" class="form-control" id="typeLivraison" required>
                                 <option value="">Sélectionnez un type</option>
                                 <option value="SUR_PLACE">Sur place</option>
                                 <option value="A_EMPORTER">À emporter</option>
                                 <option value="LIVRAISON">Livraison</option>
                             </select>
-                            <span asp-validation-for="TypeLivraison" class="text-danger"></span>
                         </div>
                         
-                        <!-- Zone de livraison (seulement si livraison) -->
+                        <!-- Zone de livraison -->
                         <div class="mb-3" id="zoneContainer" style="display: none;">
                             <label asp-for="ZoneId" class="form-label">Zone de livraison</label>
                             <select asp-for="ZoneId" class="form-control" id="zoneSelect">
                                 <option value="">Sélectionnez une zone</option>
-                                <!-- Les zones seront chargées via JavaScript -->
                             </select>
-                            <span asp-validation-for="ZoneId" class="text-danger"></span>
                         </div>
                         
-                        <!-- Adresse de livraison (seulement si livraison) -->
+                        <!-- Adresse de livraison -->
                         <div class="mb-3" id="adresseContainer" style="display: none;">
                             <label asp-for="AdresseLivraison" class="form-label">Adresse de livraison</label>
-                            <textarea asp-for="AdresseLivraison" class="form-control" rows="3" placeholder="Entrez votre adresse complète"></textarea>
-                            <span asp-validation-for="AdresseLivraison" class="text-danger"></span>
+                            <textarea asp-for="AdresseLivraison" class="form-control" rows="3" placeholder="Entrez votre adresse complète" id="AdresseLivraison"></textarea>
                         </div>
                         
-                        <!-- Compléments (seulement pour les burgers) -->
+                        <!-- Compléments -->
                         @if (Model.BurgerId.HasValue && ViewBag.Complements != null)
                         {
                             <div class="mb-3">
@@ -75,13 +79,13 @@
                                     {
                                         <div class="col-md-6 mb-2">
                                             <div class="form-check">
-                                                <input type="checkbox" 
-                                                       name="ComplementIds" 
-                                                       value="@complement.Id" 
-                                                       class="form-check-input" 
+                                                <input type="checkbox"
+                                                       name="ComplementIds"
+                                                       value="@complement.Id"
+                                                       class="form-check-input complement-checkbox"
                                                        id="complement-@complement.Id" />
                                                 <label class="form-check-label" for="complement-@complement.Id">
-                                                    @complement.Nom (+@complement.Prix.ToString("C"))
+                                                    @complement.Nom (+@complement.Prix FCFA)
                                                 </label>
                                             </div>
                                         </div>
@@ -91,6 +95,7 @@
                         }
                         
                         <div class="d-grid gap-2">
+                            <!-- ✅ FIX: Revenez à type="submit" -->
                             <button type="submit" class="btn btn-primary btn-lg">Confirmer la commande</button>
                             <a href="javascript:history.back()" class="btn btn-outline-secondary">Retour</a>
                         </div>
@@ -122,19 +127,43 @@
 
 @section Scripts {
     <script>
-        // Gestion de l'affichage des champs de livraison
-        document.getElementById('typeLivraison').addEventListener('change', function() {
-            const isLivraison = this.value === 'LIVRAISON';
-            document.getElementById('zoneContainer').style.display = isLivraison ? 'block' : 'none';
-            document.getElementById('adresseContainer').style.display = isLivraison ? 'block' : 'none';
+        // Initialisation
+        document.addEventListener('DOMContentLoaded', function() {
+            // Définir la valeur initiale du type de livraison
+            const typeLivraisonSelect = document.getElementById('typeLivraison');
+            if (typeLivraisonSelect.value) {
+                toggleLivraisonFields(typeLivraisonSelect.value);
+            }
             
-            // Charger les zones si livraison sélectionnée
-            if (isLivraison) {
+            // Événement de changement
+            typeLivraisonSelect.addEventListener('change', function() {
+                toggleLivraisonFields(this.value);
+            });
+            
+            // Charger les zones si nécessaire
+            if (typeLivraisonSelect.value === 'LIVRAISON') {
                 loadZones();
             }
         });
         
-        // Fonction pour charger les zones
+        function toggleLivraisonFields(type) {
+            const isLivraison = type === 'LIVRAISON';
+            document.getElementById('zoneContainer').style.display = isLivraison ? 'block' : 'none';
+            document.getElementById('adresseContainer').style.display = isLivraison ? 'block' : 'none';
+            
+            const zoneSelect = document.getElementById('zoneSelect');
+            const adresseField = document.getElementById('AdresseLivraison');
+            
+            if (isLivraison) {
+                zoneSelect.setAttribute('required', 'required');
+                adresseField.setAttribute('required', 'required');
+                loadZones();
+            } else {
+                zoneSelect.removeAttribute('required');
+                adresseField.removeAttribute('required');
+            }
+        }
+        
         async function loadZones() {
             try {
                 const response = await fetch('/Commande/GetZones');
@@ -146,34 +175,18 @@
                 zones.forEach(zone => {
                     const option = document.createElement('option');
                     option.value = zone.id;
-                    option.textContent = `${zone.nom} (+${zone.prix.toFixed(2)} €)`;
+                    option.textContent = `${zone.nom} (+${zone.prix} FCFA)`;
                     select.appendChild(option);
                 });
+                
+                // Sélectionner la valeur existante si présente
+                const currentValue = '@Model.ZoneId';
+                if (currentValue) {
+                    select.value = currentValue;
+                }
             } catch (error) {
                 console.error('Erreur lors du chargement des zones:', error);
             }
         }
-        
-        // Validation du formulaire
-        document.querySelector('form').addEventListener('submit', function(e) {
-            const typeLivraison = document.getElementById('typeLivraison').value;
-            
-            if (typeLivraison === 'LIVRAISON') {
-                const zoneId = document.getElementById('zoneSelect').value;
-                const adresse = document.getElementById('AdresseLivraison').value;
-                
-                if (!zoneId) {
-                    e.preventDefault();
-                    alert('Veuillez sélectionner une zone de livraison');
-                    return;
-                }
-                
-                if (!adresse.trim()) {
-                    e.preventDefault();
-                    alert('Veuillez entrer une adresse de livraison');
-                    return;
-                }
-            }
-        });
     </script>
 }

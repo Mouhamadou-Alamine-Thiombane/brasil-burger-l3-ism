@@ -11,7 +11,8 @@
                     <h4 class="mb-0"><i class="fas fa-credit-card me-2"></i>Paiement</h4>
                 </div>
                 <div class="card-body">
-                    <form asp-action="Payer" method="post">
+                    <!-- ✅ FIX: Changé de "Payer" à "ProcessPaiement" -->
+                    <form asp-action="ProcessPaiement" method="post">
                         @Html.AntiForgeryToken()
                         
                         <input type="hidden" asp-for="CommandeId" />
@@ -26,15 +27,16 @@
                             <h5 class="mb-3">Méthode de paiement</h5>
                             <div class="row">
                                 <div class="col-md-6 mb-3">
-                                    <div class="card method-card @(Model.Methode == "wave" ? "selected" : "")" 
-                                         data-method="wave">
+                                    <div class="card method-card @(Model.Methode == "WAVE" ? "selected" : "")" 
+                                         data-method="WAVE">
                                         <div class="card-body text-center">
                                             <div class="mb-3">
                                                 <i class="fas fa-mobile-alt fa-3x" style="color: #00BFFF;"></i>
                                             </div>
                                             <h5>Wave</h5>
+                                            <!-- ✅ FIX: Valeur en majuscules pour correspondre à la base de données -->
                                             <input type="radio" class="btn-check" name="Methode" 
-                                                   id="wave" value="wave" @(Model.Methode == "wave" ? "checked" : "")>
+                                                   id="wave" value="WAVE" @(Model.Methode == "WAVE" ? "checked" : "") required>
                                             <label class="btn btn-outline-primary mt-2" for="wave">
                                                 Choisir Wave
                                             </label>
@@ -43,17 +45,54 @@
                                 </div>
                                 
                                 <div class="col-md-6 mb-3">
-                                    <div class="card method-card @(Model.Methode == "om" ? "selected" : "")" 
-                                         data-method="om">
+                                    <div class="card method-card @(Model.Methode == "OM" ? "selected" : "")" 
+                                         data-method="OM">
                                         <div class="card-body text-center">
                                             <div class="mb-3">
                                                 <i class="fas fa-mobile-alt fa-3x" style="color: #FF6600;"></i>
                                             </div>
                                             <h5>Orange Money</h5>
+                                            <!-- ✅ FIX: Valeur en majuscules -->
                                             <input type="radio" class="btn-check" name="Methode" 
-                                                   id="om" value="om" @(Model.Methode == "om" ? "checked" : "")>
+                                                   id="om" value="OM" @(Model.Methode == "OM" ? "checked" : "")>
                                             <label class="btn btn-outline-warning mt-2" for="om">
                                                 Choisir OM
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- ✅ AJOUT: Option pour carte bancaire -->
+                                <div class="col-md-6 mb-3">
+                                    <div class="card method-card @(Model.Methode == "CARTE" ? "selected" : "")" 
+                                         data-method="CARTE">
+                                        <div class="card-body text-center">
+                                            <div class="mb-3">
+                                                <i class="fas fa-credit-card fa-3x" style="color: #28a745;"></i>
+                                            </div>
+                                            <h5>Carte Bancaire</h5>
+                                            <input type="radio" class="btn-check" name="Methode" 
+                                                   id="carte" value="CARTE" @(Model.Methode == "CARTE" ? "checked" : "")>
+                                            <label class="btn btn-outline-success mt-2" for="carte">
+                                                Choisir Carte
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- ✅ AJOUT: Option pour espèces -->
+                                <div class="col-md-6 mb-3">
+                                    <div class="card method-card @(Model.Methode == "ESPECES" ? "selected" : "")" 
+                                         data-method="ESPECES">
+                                        <div class="card-body text-center">
+                                            <div class="mb-3">
+                                                <i class="fas fa-money-bill-wave fa-3x" style="color: #6c757d;"></i>
+                                            </div>
+                                            <h5>Espèces</h5>
+                                            <input type="radio" class="btn-check" name="Methode" 
+                                                   id="especes" value="ESPECES" @(Model.Methode == "ESPECES" ? "checked" : "")>
+                                            <label class="btn btn-outline-secondary mt-2" for="especes">
+                                                Choisir Espèces
                                             </label>
                                         </div>
                                     </div>
@@ -63,35 +102,45 @@
                         </div>
                         
                         <!-- Détails Wave -->
-                        <div id="waveDetails" class="paiement-details" style="display: @(Model.Methode == "wave" ? "block" : "none")">
+                        <div id="waveDetails" class="paiement-details" style="display: @(Model.Methode == "WAVE" ? "block" : "none")">
                             <div class="alert alert-info">
                                 <h6><i class="fas fa-info-circle me-2"></i>Instructions Wave :</h6>
                                 <p class="mb-0">
-                                    1. Confirmez le paiement de <strong>@Model.Montant.ToString("C")</strong><br>
-                                    2. Vous recevrez une notification sur votre téléphone<br>
-                                    3. Confirmez le paiement dans l'application Wave
+                                    1. Vous recevrez une notification sur votre téléphone<br>
+                                    2. Confirmez le paiement dans l'application Wave<br>
+                                    3. Montant: <strong>@Model.Montant.ToString("C")</strong>
                                 </p>
                             </div>
                             <div class="mb-3">
                                 <label for="NumeroWave" class="form-label">Numéro Wave (optionnel)</label>
-                                <input type="tel" class="form-control" id="NumeroWave" asp-for="NumeroWave">
+                                <input type="tel" class="form-control" id="NumeroWave" name="NumeroWave" 
+                                       placeholder="Ex: 77 123 45 67" value="@Model.NumeroWave">
                             </div>
                         </div>
                         
                         <!-- Détails Orange Money -->
-                        <div id="omDetails" class="paiement-details" style="display: @(Model.Methode == "om" ? "block" : "none")">
+                        <div id="omDetails" class="paiement-details" style="display: @(Model.Methode == "OM" ? "block" : "none")">
                             <div class="alert alert-warning">
                                 <h6><i class="fas fa-info-circle me-2"></i>Instructions Orange Money :</h6>
                                 <p class="mb-0">
-                                    1. Confirmez le paiement de <strong>@Model.Montant.ToString("C")</strong><br>
-                                    2. Suivez les instructions USSD reçues<br>
-                                    3. Entrez votre code PIN pour confirmer
+                                    1. Vous recevrez un code USSD<br>
+                                    2. Suivez les instructions et entrez votre code PIN<br>
+                                    3. Montant: <strong>@Model.Montant.ToString("C")</strong>
                                 </p>
                             </div>
                             <div class="mb-3">
                                 <label for="NumeroOM" class="form-label">Numéro Orange Money (optionnel)</label>
-                                <input type="tel" class="form-control" id="NumeroOM" asp-for="NumeroOM">
+                                <input type="tel" class="form-control" id="NumeroOM" name="NumeroOM"
+                                       placeholder="Ex: 77 123 45 67" value="@Model.NumeroOM">
                             </div>
+                        </div>
+                        
+                        <!-- Référence de paiement -->
+                        <div class="mb-3">
+                            <label asp-for="Reference" class="form-label">Référence de paiement (optionnel)</label>
+                            <input asp-for="Reference" class="form-control" 
+                                   placeholder="Numéro de transaction, code, etc." />
+                            <span asp-validation-for="Reference" class="text-danger"></span>
                         </div>
                         
                         <div class="alert alert-success">
@@ -100,7 +149,7 @@
                                 <div>
                                     <h6 class="alert-heading">Paiement 100% Sécurisé</h6>
                                     <p class="mb-0 small">
-                                        Vos informations de paiement sont cryptées et protégées.
+                                        Vos informations sont cryptées et protégées.
                                     </p>
                                 </div>
                             </div>
@@ -108,11 +157,11 @@
                         
                         <div class="d-grid gap-2">
                             <button type="submit" class="btn btn-success btn-lg">
-                                <i class="fas fa-lock me-2"></i>Payer maintenant
+                                <i class="fas fa-lock me-2"></i>Payer @Model.Montant.ToString("C")
                             </button>
-                            <a asp-controller="Commande" asp-action="Valider" 
+                            <a asp-controller="Commande" asp-action="Detail" asp-route-id="@Model.CommandeId" 
                                class="btn btn-outline-secondary">
-                                <i class="fas fa-arrow-left me-2"></i>Retour
+                                <i class="fas fa-arrow-left me-2"></i>Retour à la commande
                             </a>
                         </div>
                     </form>
@@ -151,13 +200,24 @@
                 
                 // Afficher/masquer les détails
                 $('.paiement-details').hide();
-                $(`#${method}Details`).show();
+                $(`#${method.toLowerCase()}Details`).show();
             });
             
             // Gérer le clic sur les cartes
             $('.method-card').on('click', function() {
                 const method = $(this).data('method');
-                $(`#${method}`).prop('checked', true).trigger('change');
+                $(`#${method.toLowerCase()}`).prop('checked', true).trigger('change');
+            });
+            
+            // Validation du formulaire
+            $('#paiementForm').on('submit', function(e) {
+                const selectedMethod = $('input[name="Methode"]:checked');
+                if (!selectedMethod.length) {
+                    e.preventDefault();
+                    alert('Veuillez sélectionner une méthode de paiement');
+                    return false;
+                }
+                return true;
             });
         });
     </script>

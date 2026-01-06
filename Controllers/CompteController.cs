@@ -55,6 +55,7 @@ namespace BrasilBurger.Controllers
 
             ViewBag.IsAuthenticated = true;
             ViewBag.ClientNom = client.Nom;
+            ViewBag.ClientPrenom = client.Prenom;
             return View(model);
         }
 

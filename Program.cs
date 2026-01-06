@@ -1,6 +1,7 @@
 using BrasilBurger.Data;
 using BrasilBurger.Services;
 using BrasilBurger.Models;
+using BrasilBurger.Controllers;
 using Microsoft.EntityFrameworkCore;
 
 // SOLUTION CRITIQUE pour PostgreSQL et DateTime
@@ -34,6 +35,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 // Services
 // =====================================
 builder.Services.AddScoped<AuthService>();
+builder.Services.AddScoped<CompteController>();
 builder.Services.AddScoped<BurgerService>();
 builder.Services.AddScoped<CommandeService>();
 builder.Services.AddScoped<PaiementService>();
@@ -55,8 +57,8 @@ builder.Services.AddSession(options =>
 // =====================================
 builder.Services.AddHttpContextAccessor();
 
-//   var port = Environment.GetEnvironmentVariable("PORT") ?? "5000";
-//   builder.WebHost.UseUrls($"http://0.0.0.0:{port}");
+   var port = Environment.GetEnvironmentVariable("PORT") ?? "5000";
+   builder.WebHost.UseUrls($"http://0.0.0.0:{port}");
 
 var app = builder.Build();
 

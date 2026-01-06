@@ -23,11 +23,24 @@ namespace BrasilBurger.Data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+
             modelBuilder.Entity<Commande>()
-                .Property(e => e.Etat)
-                .HasConversion<string>()
-                .HasColumnName("etat")
-                .HasMaxLength(20);
+                .Property(c => c.Etat)
+                .HasConversion<string>() // Convertit string <-> varchar
+                .HasMaxLength(50) // Augmenter la taille
+                .IsRequired()
+                .HasDefaultValue("EN_ATTENTE")
+                .HasColumnName("etat");
+
+
+           // ✅ FIX: Configuration pour la colonne etat avec type personnalisé
+            modelBuilder.Entity<Commande>()
+                .Property(c => c.Etat)
+                .HasColumnType("etat_commande")
+                .HasConversion(
+                    v => v.ToString(), // C# -> Database
+                    v => v.ToString()  // Database -> C#
+                );
 
             // ✅ CORRECTION 1: Désactiver les conventions problématiques
             modelBuilder.Entity<Menu>()
