@@ -83,15 +83,15 @@
                                     <tr>
                                         <td>@item.Nom (@item.Type)</td>
                                         <td>@item.Quantite</td>
-                                        <td>@item.PrixUnitaire.ToString("C")</td>
-                                        <td>@item.Total.ToString("C")</td>
+                                        <td>@item.PrixUnitaire.ToString("N0") FCFA</td>
+                                        <td>@item.Total.ToString("N0") FCFA</td>
                                     </tr>
                                 }
                             </tbody>
                             <tfoot>
                                 <tr>
                                     <td colspan="3" class="text-end"><strong>Total:</strong></td>
-                                    <td class="text-success fw-bold">@Model.Total.ToString("C")</td>
+                                    <td class="text-success fw-bold">@Model.Total.ToString("N0") FCFA</td>
                                 </tr>
                             </tfoot>
                         </table>

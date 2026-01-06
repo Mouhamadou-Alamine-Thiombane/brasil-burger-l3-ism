@@ -25,7 +25,7 @@
                         <ul class="mb-0">
                             <li><strong>N° Commande :</strong> #@Model.Id.ToString("D6")</li>
                             <li><strong>Date :</strong> @Model.DateCommande.ToLocalTime().ToString("dd/MM/yyyy HH:mm")</li>
-                            <li><strong>Montant :</strong> @Model.Total.ToString("C")</li>
+                            <li><strong>Montant :</strong> @Model.Total.ToString("N0") FCFA</li>
                             <li><strong>Statut :</strong> <span class="badge bg-success">@Model.Etat</span></li> <!-- CHANGÉ ICI -->
                         </ul>
                     </div>

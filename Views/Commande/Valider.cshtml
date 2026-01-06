@@ -53,7 +53,7 @@
                         </div>
                         
                         <div class="alert alert-info">
-                            <h5>Total: @Model.Total.ToString("C")</h5>
+                            <h5>Total: @Model.Total.ToString("N0") FCFA</h5>
                         </div>
                         
                         <button type="submit" class="btn btn-primary btn-lg w-100">Confirmer la commande</button>
@@ -71,7 +71,7 @@
                     <p>Votre commande sera traitée sous 30 minutes.</p>
                     <p>Pour les livraisons, le délai estimé est de 45-60 minutes.</p>
                     <hr>
-                    <p><strong>Total:</strong> @Model.Total.ToString("C")</p>
+                    <p><strong>Total:</strong> @Model.Total.ToString("N0") FCFA</p>
                 </div>
             </div>
         </div>

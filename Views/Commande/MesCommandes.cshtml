@@ -36,7 +36,7 @@
                                     _ => <span>@commande.TypeLivraison</span>
                                 }
                             </td>
-                            <td class="text-success fw-bold">@commande.Total.ToString("C")</td>
+                            <td class="text-success fw-bold">@commande.Total.ToString("N0") FCFA</td>
                             <td>
                                 @{
                                     var badgeClass = commande.Etat switch
@@ -93,7 +93,7 @@
             <div class="alert alert-info">
                 <h5>Récapitulatif</h5>
                 <p>Nombre de commandes: <strong>@Model.Count</strong></p>
-                <p>Total dépensé: <strong class="text-success">@Model.Sum(c => c.Total).ToString("C")</strong></p>
+                <p>Total dépensé: <strong class="text-success">@Model.Sum(c => c.Total).ToString("N0") FCFA</strong></p>
                 <p>Commandes en attente: <strong>@Model.Count(c => c.Etat == "EN_ATTENTE")</strong></p>
             </div>
         </div>

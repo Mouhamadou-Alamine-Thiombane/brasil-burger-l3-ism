@@ -19,7 +19,7 @@
                         <input type="hidden" asp-for="Montant" />
                         
                         <div class="mb-4 text-center">
-                            <h3>Montant à payer : <span class="text-warning">@Model.Montant.ToString("C")</span></h3>
+                            <h3>Montant à payer : <span class="text-warning">@Model.Montant.ToString("N0") FCFA</span></h3>
                             <p class="text-muted">Commande N° @Model.CommandeId</p>
                         </div>
                         
@@ -108,7 +108,7 @@
                                 <p class="mb-0">
                                     1. Vous recevrez une notification sur votre téléphone<br>
                                     2. Confirmez le paiement dans l'application Wave<br>
-                                    3. Montant: <strong>@Model.Montant.ToString("C")</strong>
+                                    3. Montant: <strong>@Model.Montant.ToString("N0") FCFA</strong>
                                 </p>
                             </div>
                             <div class="mb-3">
@@ -125,7 +125,7 @@
                                 <p class="mb-0">
                                     1. Vous recevrez un code USSD<br>
                                     2. Suivez les instructions et entrez votre code PIN<br>
-                                    3. Montant: <strong>@Model.Montant.ToString("C")</strong>
+                                    3. Montant: <strong>@Model.Montant.ToString("N0") FCFA</strong>
                                 </p>
                             </div>
                             <div class="mb-3">
@@ -157,7 +157,7 @@
                         
                         <div class="d-grid gap-2">
                             <button type="submit" class="btn btn-success btn-lg">
-                                <i class="fas fa-lock me-2"></i>Payer @Model.Montant.ToString("C")
+                                <i class="fas fa-lock me-2"></i>Payer @Model.Montant.ToString("N0") FCFA
                             </button>
                             <a asp-controller="Commande" asp-action="Detail" asp-route-id="@Model.CommandeId" 
                                class="btn btn-outline-secondary">

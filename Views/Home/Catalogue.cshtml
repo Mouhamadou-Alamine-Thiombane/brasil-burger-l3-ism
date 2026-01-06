@@ -45,7 +45,7 @@
                             <h5 class="card-title">@burger.Nom</h5>
                             <p class="card-text flex-grow-1">@burger.Description</p>
                             <div class="mt-3">
-                                <div class="h4 text-warning mb-3">@burger.Prix.ToString("C")</div>
+                                <div class="h4 text-warning mb-3">@burger.Prix.ToString("N0") FCFA</div>
                                 <div class="d-grid">
                                     <a href="@Url.Action("Detail", "Burger", new { id = burger.Id })" 
                                        class="btn btn-primary">Voir détails</a>
@@ -74,7 +74,7 @@
                                 @(menu.Burger?.Nom + " + " + menu.Complement?.Nom)
                             </p>
                             <div class="mt-3">
-                                <div class="h4 text-warning mb-3">@menu.PrixTotal.ToString("C")</div>
+                                <div class="h4 text-warning mb-3">@menu.PrixTotal.ToString("N0") FCFA</div>
                                 <div class="d-grid">
                                     <a href="@Url.Action("Detail", "Burger", new { id = menu.Id })" 
                                        class="btn btn-primary">Voir détails</a>
